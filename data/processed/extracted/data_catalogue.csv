@@ -1,0 +1,10 @@
+table,file,one row is,rows,columns,size_MB,group,role,join keys,period
+bond_lodgements,bond_lodgements.parquet,one bond lodged (one new tenancy),2215281,7,6.51,Core,Outcome: new-lease weekly rent,postcode (→ ABS POA); lodgement_date,2018; Jan 2021 – Sep 2026
+cricos_course_locations,cricos_course_locations.parquet,one course offered at one location,46511,16,0.94,Core,Campus locations and course level,postcode (→ ABS POA); cricos_provider_code,"Snapshot, Sep 2026"
+doe_enrolments_sa4,doe_enrolments_sa4.parquet,one SA4 × sector × field of study,1135,8,0.02,Core,Where international students study (shares between regions),sa4_name (→ ABS SA4 names),Year to Dec 2025
+abs_postcode_correspondence,abs_postcode_correspondence.parquet,one postcode × one region it overlaps (with population share),13268,6,0.11,Core,"Maps postcodes to SA4, SA3, LGA and Greater Sydney",poa,ASGS Edition 3 (2021)
+abs_postcode_centres,abs_postcode_centres.parquet,one NSW postcode area (centre point),636,4,0.02,Core,Distances and maps,poa,ASGS Edition 3 (2021)
+dcj_rent_postcode_quarterly,dcj_rent_postcode_quarterly.parquet,one postcode × dwelling type × bedrooms × quarter,328021,14,1.32,Enrichment,Pre-COVID check; fills 2019–2020,poa; quarter,Mar 2018 – Dec 2022 quarters
+census2021_postcode,census2021_postcode.parquet,one NSW postcode area,612,12,0.05,Enrichment,Residents who are university students; renter share; medians,poa,"Census night, 10 Aug 2021"
+bp0019_visa_holders,bp0019_visa_holders.parquet,one snapshot × visa subclass × applicant type × citizenship,308631,7,0.69,Enrichment,Students present (stock): phases and seasonality,snapshot date (national),"Dec 2011 – Sep 2026, quarterly"
+cos_housing_audit_student_rooms,cos_housing_audit_student_rooms.csv,one June audit (City of Sydney local area),11,7,0.0,Enrichment,Supply of student rooms (context),audit_year (City of Sydney only),June 2015 – June 2025

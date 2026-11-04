@@ -1,0 +1,258 @@
+poa,gs_ratio,sa4,sa4_ratio,sa3,cos_ratio,city_of_sydney,lga_dom,lon,lat
+2000,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.20821956648604,-33.8683837529546
+2007,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.19795552065878,-33.88023905614011
+2008,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.19669417535508,-33.88830014106841
+2009,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.19352250722693,-33.869006035861766
+2010,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.21492532486772,-33.88256687956943
+2011,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,0.9999995,True,Sydney,151.22451913798497,-33.869951115641925
+2015,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.19304690210484,-33.90811843325891
+2016,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.20659739964896,-33.89308847641152
+2017,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.2077865795538,-33.90301829907458
+2018,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,0.5495016,True,Sydney,151.20868669332228,-33.92491760618605
+2019,1.0,Sydney - City and Inner South,1.0,Botany,0.0,False,Bayside (NSW),151.20750346890784,-33.95343204636278
+2020,1.0,Sydney - City and Inner South,1.0,Botany,0.0,False,Bayside (NSW),151.18198537307256,-33.94014619322024
+2021,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.3390552,False,Woollahra,151.22821718808092,-33.893013270721575
+2022,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Waverley,151.24924534877266,-33.89585886875132
+2023,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Woollahra,151.25562856633584,-33.88084471231471
+2024,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Waverley,151.26143556785064,-33.90329736718065
+2025,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Woollahra,151.24387409557477,-33.886989280833895
+2026,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Waverley,151.27247949345215,-33.889634171483735
+2027,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Woollahra,151.24108286019722,-33.872448139494956
+2028,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Woollahra,151.24380821890057,-33.877809950755434
+2029,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Woollahra,151.2689263813587,-33.87391529736316
+2030,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - North,0.0,False,Woollahra,151.27843604339841,-33.85739013851157
+2031,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - South,0.0,False,Randwick,151.2438951215046,-33.914988779822316
+2032,1.0,Sydney - Eastern Suburbs,0.9206944,Eastern Suburbs - South,0.0,False,Randwick,151.22842676222174,-33.92593364005143
+2033,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - South,0.0,False,Randwick,151.2207568723605,-33.913411948760476
+2034,1.0,Sydney - Eastern Suburbs,1.0,Eastern Suburbs - South,0.0,False,Randwick,151.25451774044956,-33.92447530931363
+2035,1.0,Sydney - Eastern Suburbs,0.8879163,Eastern Suburbs - South,0.0,False,Randwick,151.23698911674182,-33.94238460781104
+2036,1.0,Sydney - Eastern Suburbs,0.7108692,Eastern Suburbs - South,0.0,False,Randwick,151.2389623008636,-33.97088402036264
+2037,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.18528308994317,-33.87876682058129
+2038,1.0,Sydney - Inner West,0.9975739,Leichhardt,0.0024314,False,Inner West,151.1713737069276,-33.880820399873585
+2039,1.0,Sydney - Inner West,1.0,Leichhardt,0.0,False,Inner West,151.1733439803681,-33.865068827974305
+2040,1.0,Sydney - Inner West,1.0,Leichhardt,0.0,False,Inner West,151.15759330604473,-33.87722589135959
+2041,1.0,Sydney - Inner West,0.999742,Leichhardt,0.0,False,Inner West,151.18237056988562,-33.85640966786414
+2042,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,0.3625646,False,Inner West,151.1774997774259,-33.898926481830706
+2043,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,1.0,True,Sydney,151.18575981343292,-33.90255878829689
+2044,1.0,Sydney - City and Inner South,1.0,Marrickville - Sydenham - Petersham,0.0018123,False,Inner West,151.1693905521653,-33.92033498041924
+2045,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Inner West,151.14001025963603,-33.877916409628526
+2046,1.0,Sydney - Inner West,1.0,Canada Bay,0.0,False,Canada Bay,151.13213688820676,-33.860879559140585
+2047,1.0,Sydney - Inner West,1.0,Canada Bay,0.0,False,Canada Bay,151.15298388782108,-33.85256510750629
+2048,1.0,Sydney - City and Inner South,1.0,Marrickville - Sydenham - Petersham,0.0,False,Inner West,151.16598686335323,-33.893007371867675
+2049,1.0,Sydney - City and Inner South,0.6676781,Marrickville - Sydenham - Petersham,0.0,False,Inner West,151.15225257159196,-33.894776633309924
+2050,1.0,Sydney - City and Inner South,1.0,Sydney Inner City,0.6397748,True,Sydney,151.18181940620684,-33.88846155942346
+2060,1.0,Sydney - North Sydney and Hornsby,1.0,North Sydney - Mosman,0.0,False,North Sydney,151.20504038456787,-33.83896983163025
+2061,1.0,Sydney - North Sydney and Hornsby,1.0,North Sydney - Mosman,0.0,False,North Sydney,151.21448481731943,-33.84752046485123
+2062,1.0,Sydney - North Sydney and Hornsby,1.0,North Sydney - Mosman,0.0,False,North Sydney,151.2142717533844,-33.822174094755034
+2063,1.0,Sydney - North Sydney and Hornsby,1.0,Chatswood - Lane Cove,0.0,False,Willoughby,151.21803448696667,-33.810825629728924
+2064,1.0,Sydney - North Sydney and Hornsby,1.0,Chatswood - Lane Cove,0.0,False,Willoughby,151.18600732018976,-33.81094059576995
+2065,1.0,Sydney - North Sydney and Hornsby,1.0,Chatswood - Lane Cove,0.0,False,North Sydney,151.19416943529293,-33.825923032347774
+2066,1.0,Sydney - North Sydney and Hornsby,1.0,Chatswood - Lane Cove,0.0,False,Lane Cove,151.16193299695564,-33.816359835834646
+2067,1.0,Sydney - North Sydney and Hornsby,1.0,Chatswood - Lane Cove,0.0,False,Willoughby,151.17789169853688,-33.79616606518005
+2068,1.0,Sydney - North Sydney and Hornsby,1.0,Chatswood - Lane Cove,0.0,False,Willoughby,151.20823287805396,-33.79974787294663
+2069,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.19515212842157,-33.782707964067754
+2070,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.17001550738203,-33.776082645584616
+2071,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.16706476116966,-33.76284017552771
+2072,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.15341586985394,-33.755678233538184
+2073,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.13664657084354,-33.751594149600685
+2074,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.13852607617025,-33.71176215664651
+2075,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.1708357644589,-33.72085301834663
+2076,1.0,Sydney - North Sydney and Hornsby,1.0,Ku-ring-gai,0.0,False,Ku-ring-gai,151.11594762267904,-33.71618246548779
+2077,1.0,Sydney - North Sydney and Hornsby,1.0,Hornsby,0.0,False,Hornsby,151.10154163059298,-33.67840172590857
+2079,1.0,Sydney - North Sydney and Hornsby,1.0,Hornsby,0.0,False,Hornsby,151.12723224314664,-33.66710001862469
+2080,1.0,Sydney - North Sydney and Hornsby,1.0,Hornsby,0.0,False,Hornsby,151.13541851124504,-33.64632287276704
+2081,1.0,Sydney - North Sydney and Hornsby,1.0,Hornsby,0.0,False,Hornsby,151.16416639779138,-33.57987103848039
+2082,1.0,Sydney - North Sydney and Hornsby,0.9701269,Hornsby,0.0,False,Hornsby,151.1358563750995,-33.59580611537007
+2083,1.0,Sydney - North Sydney and Hornsby,0.6571806,Hornsby,0.0,False,Hornsby,151.1971687829688,-33.55917281610017
+2084,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.23072454780916,-33.643747579561776
+2085,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.20802309906057,-33.724898548951224
+2086,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.2235877554516,-33.74815005190118
+2087,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.21580065148126,-33.76649434092406
+2088,1.0,Sydney - North Sydney and Hornsby,1.0,North Sydney - Mosman,0.0,False,Mosman,151.24464085994035,-33.829069090188675
+2089,1.0,Sydney - North Sydney and Hornsby,1.0,North Sydney - Mosman,0.0,False,North Sydney,151.21873911293696,-33.835906390297
+2090,1.0,Sydney - North Sydney and Hornsby,1.0,North Sydney - Mosman,0.0,False,North Sydney,151.22643955081966,-33.829850351437706
+2092,1.0,Sydney - Northern Beaches,1.0,Manly,0.0,False,Northern Beaches,151.24189268572306,-33.79208354817121
+2093,1.0,Sydney - Northern Beaches,1.0,Manly,0.0,False,Northern Beaches,151.26155402163766,-33.79459686102673
+2094,1.0,Sydney - Northern Beaches,1.0,Manly,0.0,False,Northern Beaches,151.27396980247707,-33.794055876588956
+2095,1.0,Sydney - Northern Beaches,1.0,Manly,0.0,False,Northern Beaches,151.29126066355295,-33.80491741179683
+2096,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.28631185501328,-33.77408245819835
+2097,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.29462983532238,-33.73434338158581
+2099,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.26570527459842,-33.73802915601838
+2100,1.0,Sydney - Northern Beaches,1.0,Warringah,0.0,False,Northern Beaches,151.2561138619504,-33.76382831558451
+2101,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.26632843101683,-33.69669510679194
+2102,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.29535637322383,-33.68873496346206
+2103,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.30387824113149,-33.675971749578224
+2104,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.28954901361482,-33.66196139806834
+2105,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.28383929039066,-33.64081662157496
+2106,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.31533046419625,-33.65654639898262
+2107,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.3241850299864,-33.6321200302325
+2108,1.0,Sydney - Northern Beaches,1.0,Pittwater,0.0,False,Northern Beaches,151.32354648326216,-33.59819500263128
+2110,1.0,Sydney - Ryde,0.9992871,Ryde - Hunters Hill,0.0,False,Hunters Hill,151.1499153628763,-33.832469931215364
+2111,1.0,Sydney - Ryde,1.0,Ryde - Hunters Hill,0.0,False,Ryde,151.128150049679,-33.83037024706432
+2112,1.0,Sydney - Ryde,1.0,Ryde - Hunters Hill,0.0,False,Ryde,151.10991646517553,-33.811959480334735
+2113,1.0,Sydney - Ryde,1.0,Ryde - Hunters Hill,0.0,False,Ryde,151.12883468268697,-33.78935124614223
+2114,1.0,Sydney - Ryde,0.9805364,Ryde - Hunters Hill,0.0,False,Ryde,151.08307840071504,-33.80762071008292
+2115,1.0,Sydney - Parramatta,1.0,Carlingford,0.0,False,Parramatta,151.05989922423808,-33.81157073226901
+2116,1.0,Sydney - Parramatta,1.0,Carlingford,0.0,False,Parramatta,151.03999413363573,-33.81261051455507
+2117,1.0,Sydney - Parramatta,1.0,Carlingford,0.0,False,Parramatta,151.04012857208423,-33.7958907566958
+2118,1.0,Sydney - Parramatta,0.9999996,Carlingford,0.0,False,Parramatta,151.0453858255425,-33.77573848245954
+2119,1.0,Sydney - Ryde,0.7864481,Pennant Hills - Epping,0.0,False,Hornsby,151.06529062706608,-33.75391902101133
+2120,1.0,Sydney - North Sydney and Hornsby,0.6185582,Hornsby,0.0,False,Hornsby,151.07560936315423,-33.726924354357834
+2121,1.0,Sydney - Ryde,0.975731,Pennant Hills - Epping,0.0,False,Parramatta,151.08079376118917,-33.7692021336182
+2122,1.0,Sydney - Ryde,1.0,Ryde - Hunters Hill,0.0,False,Ryde,151.09284306827644,-33.78325225247675
+2125,1.0,Sydney - Baulkham Hills and Hawkesbury,0.7622311,Baulkham Hills,0.0,False,The Hills,151.03339833204328,-33.7483097783634
+2126,1.0,Sydney - Baulkham Hills and Hawkesbury,1.0,Baulkham Hills,0.0,False,Hornsby,151.04612322602708,-33.72195448978495
+2127,1.0,Sydney - Parramatta,0.9999987,Auburn,0.0,False,Parramatta,151.06798442631757,-33.83877078312838
+2128,1.0,Sydney - Parramatta,1.0,Auburn,0.0,False,Parramatta,151.04626053952936,-33.83422032699805
+2130,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Inner West,151.13713247572883,-33.89268516345383
+2131,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Inner West,151.12620147208133,-33.888698770186465
+2132,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Burwood,151.11551484561247,-33.88032118829629
+2133,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Burwood,151.10304841290926,-33.897194256488476
+2134,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Burwood,151.10381539419097,-33.87807860344092
+2135,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Strathfield,151.0818042823627,-33.87848188429224
+2136,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Burwood,151.08278249503292,-33.8937051786686
+2137,1.0,Sydney - Inner West,1.0,Canada Bay,0.0,False,Canada Bay,151.10334814849324,-33.85493688121633
+2138,1.0,Sydney - Inner West,1.0,Canada Bay,0.0,False,Canada Bay,151.08990214604046,-33.83942666401033
+2140,1.0,Sydney - Inner West,1.0,Strathfield - Burwood - Ashfield,0.0,False,Strathfield,151.0752084034294,-33.86274476301161
+2141,1.0,Sydney - Parramatta,1.0,Auburn,0.0,False,Cumberland,151.0474357958055,-33.86730468132017
+2142,1.0,Sydney - Parramatta,1.0,Merrylands - Guildford,0.0,False,Cumberland,151.0182553257626,-33.83533963507589
+2143,1.0,Sydney - Parramatta,0.5094978,Auburn,0.0,False,Canterbury-Bankstown,151.02630442293614,-33.88828633316524
+2144,1.0,Sydney - Parramatta,1.0,Auburn,0.0,False,Cumberland,151.02620888398684,-33.854687084849985
+2145,1.0,Sydney - Parramatta,1.0,Parramatta,0.0,False,Cumberland,150.9520196912778,-33.81488716336249
+2146,1.0,Sydney - Parramatta,0.5725856,Parramatta,0.0,False,Parramatta,150.95315848834971,-33.78981703911965
+2147,1.0,Sydney - Blacktown,1.0,Blacktown,0.0,False,Blacktown,150.93664412997256,-33.76796567310155
+2148,1.0,Sydney - Blacktown,1.0,Blacktown,0.0,False,Blacktown,150.89922063119766,-33.78491376286111
+2150,1.0,Sydney - Parramatta,1.0,Parramatta,0.0,False,Parramatta,151.00666849659893,-33.814973079177314
+2151,1.0,Sydney - Parramatta,1.0,Parramatta,0.0,False,Parramatta,151.01459701968986,-33.783729903227936
+2152,1.0,Sydney - Parramatta,1.0,Parramatta,0.0,False,Parramatta,150.99414726275737,-33.7873006936609
+2153,1.0,Sydney - Baulkham Hills and Hawkesbury,0.7745209,Baulkham Hills,0.0,False,The Hills,150.97485470873602,-33.7542814513354
+2154,1.0,Sydney - Baulkham Hills and Hawkesbury,1.0,Baulkham Hills,0.0,False,The Hills,150.99988047796148,-33.72788658035527
+2155,1.0,Sydney - Baulkham Hills and Hawkesbury,0.8193106,Rouse Hill - McGraths Hill,0.0,False,The Hills,150.9350364969765,-33.69078037827107
+2156,1.0,Sydney - Baulkham Hills and Hawkesbury,1.0,Dural - Wisemans Ferry,0.0,False,The Hills,150.97163445410075,-33.6525010631639
+2157,1.0,Sydney - Baulkham Hills and Hawkesbury,1.0,Dural - Wisemans Ferry,0.0,False,The Hills,151.03125285311876,-33.540382709145646
+2158,1.0,Sydney - Baulkham Hills and Hawkesbury,1.0,Dural - Wisemans Ferry,0.0,False,Hornsby,151.0357790842395,-33.67550641501519
+2159,1.0,Sydney - Baulkham Hills and Hawkesbury,1.0,Dural - Wisemans Ferry,0.0,False,Hornsby,151.08013837966698,-33.5888455011038
+2160,1.0,Sydney - Parramatta,1.0,Merrylands - Guildford,0.0,False,Cumberland,150.9827949185693,-33.836248033399315
+2161,1.0,Sydney - Parramatta,1.0,Merrylands - Guildford,0.0,False,Cumberland,150.981057775113,-33.85730985775075
+2162,1.0,Sydney - Parramatta,1.0,Merrylands - Guildford,0.0,False,Canterbury-Bankstown,151.00299178831074,-33.88163434852685
+2163,1.0,Sydney - Parramatta,0.6512913,Merrylands - Guildford,0.0,False,Fairfield,150.97823926742024,-33.88670257647788
+2164,1.0,Sydney - South West,0.9192312,Fairfield,0.0,False,Fairfield,150.91731934191614,-33.845196844533184
+2165,1.0,Sydney - South West,0.8766555,Fairfield,0.0,False,Fairfield,150.9464071752188,-33.870457543144624
+2166,1.0,Sydney - South West,1.0,Fairfield,0.0,False,Fairfield,150.93787755346406,-33.893082033796546
+2167,1.0,Sydney - Outer South West,1.0,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.89354241591937,-33.9714630329059
+2168,1.0,Sydney - South West,1.0,Bringelly - Green Valley,0.0,False,Liverpool,150.87655747104327,-33.913512796581564
+2170,1.0,Sydney - South West,1.0,Liverpool,0.0,False,Liverpool,150.9187321071737,-33.93350594460133
+2171,1.0,Sydney - South West,1.0,Bringelly - Green Valley,0.0,False,Liverpool,150.84146092462376,-33.91565090103673
+2172,1.0,Sydney - South West,1.0,Liverpool,0.0,False,Liverpool,150.98036797210406,-33.96527263628417
+2173,1.0,Sydney - South West,0.9996537,Liverpool,0.0,False,Liverpool,150.9141715380199,-34.06710210345948
+2174,1.0,Sydney - South West,1.0,Liverpool,0.0,False,Liverpool,150.8576092219524,-33.96267733564686
+2175,1.0,Sydney - South West,1.0,Fairfield,0.0,False,Fairfield,150.84773607246703,-33.84021986547016
+2176,1.0,Sydney - South West,1.0,Fairfield,0.0,False,Fairfield,150.88409309872307,-33.870927148213624
+2177,1.0,Sydney - South West,1.0,Fairfield,0.0,False,Fairfield,150.8811600349787,-33.89257150088106
+2178,1.0,Sydney - South West,1.0,Fairfield,0.0,False,Penrith,150.79991024791954,-33.87021428013794
+2179,1.0,Sydney - South West,1.0,Bringelly - Green Valley,0.0,False,Liverpool,150.80159470152276,-33.95214253622812
+2190,1.0,Sydney - Inner South West,0.9999993,Bankstown,0.0,False,Canterbury-Bankstown,151.05575520157782,-33.900728810607355
+2191,1.0,Sydney - Inner South West,1.0,Canterbury,0.0,False,Canterbury-Bankstown,151.0858516370916,-33.904411763881775
+2192,1.0,Sydney - Inner South West,1.0,Canterbury,0.0,False,Canterbury-Bankstown,151.08935605068947,-33.919001855269165
+2193,1.0,Sydney - Inner West,0.7081129,Strathfield - Burwood - Ashfield,0.0,False,Canterbury-Bankstown,151.12042627358608,-33.90871057014137
+2194,1.0,Sydney - Inner South West,1.0,Canterbury,0.0,False,Canterbury-Bankstown,151.10279500458594,-33.912506662629156
+2195,1.0,Sydney - Inner South West,1.0,Canterbury,0.0,False,Canterbury-Bankstown,151.07297063727907,-33.92103024209607
+2196,1.0,Sydney - Inner South West,1.0,Canterbury,0.0,False,Canterbury-Bankstown,151.0607308848917,-33.93049478990725
+2197,1.0,Sydney - Inner South West,0.9869362,Bankstown,0.0,False,Canterbury-Bankstown,150.99634709402793,-33.89921014164815
+2198,1.0,Sydney - Inner South West,1.0,Bankstown,0.0,False,Canterbury-Bankstown,150.98811645093198,-33.908912526360595
+2199,1.0,Sydney - Inner South West,1.0,Bankstown,0.0,False,Canterbury-Bankstown,151.020319821289,-33.904697092076674
+2200,1.0,Sydney - Inner South West,1.0,Bankstown,0.0,False,Canterbury-Bankstown,151.0144058726718,-33.92221941300466
+2203,1.0,Sydney - Inner West,0.9959975,Strathfield - Burwood - Ashfield,0.0,False,Inner West,151.13959071324552,-33.90410465223241
+2204,1.0,Sydney - City and Inner South,1.0,Marrickville - Sydenham - Petersham,0.0,False,Inner West,151.1555759183343,-33.911249190827824
+2205,1.0,Sydney - Inner South West,1.0,Kogarah - Rockdale,0.0,False,Bayside (NSW),151.14760523729956,-33.93675334422969
+2206,1.0,Sydney - Inner South West,1.0,Canterbury,0.0,False,Canterbury-Bankstown,151.12597900139147,-33.92478078930553
+2207,1.0,Sydney - Inner South West,1.0,Kogarah - Rockdale,0.0,False,Bayside (NSW),151.12093101240015,-33.94749093288475
+2208,1.0,Sydney - Inner South West,1.0,Kogarah - Rockdale,0.0,False,Canterbury-Bankstown,151.0992631399855,-33.93934988572004
+2209,1.0,Sydney - Inner South West,1.0,Hurstville,0.0,False,Georges River,151.0769976107725,-33.94722912461984
+2210,1.0,Sydney - Inner South West,1.0,Hurstville,0.0,False,Georges River,151.05233647725413,-33.96233525868305
+2211,1.0,Sydney - Inner South West,1.0,Bankstown,0.0,False,Canterbury-Bankstown,151.03235968803824,-33.95563091421896
+2212,1.0,Sydney - Inner South West,1.0,Bankstown,0.0,False,Canterbury-Bankstown,151.01388460322755,-33.949192612478505
+2213,1.0,Sydney - Inner South West,1.0,Bankstown,0.0,False,Canterbury-Bankstown,150.99928984574674,-33.9623752592358
+2214,1.0,Sydney - Inner South West,1.0,Bankstown,0.0,False,Canterbury-Bankstown,150.9814874857458,-33.93883675859635
+2216,1.0,Sydney - Inner South West,1.0,Kogarah - Rockdale,0.0,False,Bayside (NSW),151.147256319814,-33.95308463279691
+2217,1.0,Sydney - Inner South West,1.0,Kogarah - Rockdale,0.0,False,Bayside (NSW),151.13738059607672,-33.973629807918854
+2218,1.0,Sydney - Inner South West,1.0,Kogarah - Rockdale,0.0,False,Georges River,151.11973757566915,-33.97121778856025
+2219,1.0,Sydney - Inner South West,1.0,Kogarah - Rockdale,0.0,False,Bayside (NSW),151.13561368293207,-33.99449572601588
+2220,1.0,Sydney - Inner South West,1.0,Hurstville,0.0,False,Georges River,151.09940323538578,-33.964570053586364
+2221,1.0,Sydney - Inner South West,1.0,Hurstville,0.0,False,Georges River,151.10632537977938,-33.98647487319197
+2222,1.0,Sydney - Inner South West,1.0,Hurstville,0.0,False,Georges River,151.0861174413893,-33.96393206754748
+2223,1.0,Sydney - Inner South West,1.0,Hurstville,0.0,False,Georges River,151.0735858548123,-33.977333462193286
+2224,1.0,Sydney - Sutherland,1.0,Cronulla - Miranda - Caringbah,0.0,False,Sutherland,151.10221652428262,-34.014237451869256
+2225,1.0,Sydney - Sutherland,1.0,Sutherland - Menai - Heathcote,0.0,False,Sutherland,151.08024890222927,-34.00375281083313
+2226,1.0,Sydney - Sutherland,1.0,Sutherland - Menai - Heathcote,0.0,False,Sutherland,151.06239640758812,-34.010830984487285
+2227,1.0,Sydney - Sutherland,1.0,Cronulla - Miranda - Caringbah,0.0,False,Sutherland,151.08621337403596,-34.04193805818283
+2228,1.0,Sydney - Sutherland,1.0,Cronulla - Miranda - Caringbah,0.0,False,Sutherland,151.1032293596575,-34.036060562630105
+2229,1.0,Sydney - Sutherland,1.0,Cronulla - Miranda - Caringbah,0.0,False,Sutherland,151.12242021174742,-34.04451456459559
+2230,1.0,Sydney - Sutherland,1.0,Cronulla - Miranda - Caringbah,0.0,False,Sutherland,151.14702014608815,-34.05761072558992
+2231,1.0,Sydney - Sutherland,1.0,Cronulla - Miranda - Caringbah,0.0,False,Sutherland,151.19517806958532,-34.02316309951826
+2232,1.0,Sydney - Sutherland,1.0,Sutherland - Menai - Heathcote,0.0,False,Sutherland,151.06716080748987,-34.104193495883436
+2233,1.0,Sydney - Sutherland,1.0,Sutherland - Menai - Heathcote,0.0,False,Sutherland,150.9927262969889,-34.088611964778686
+2234,1.0,Sydney - Sutherland,1.0,Sutherland - Menai - Heathcote,0.0,False,Sutherland,151.00618079696588,-34.017219763656634
+2250,0.997737,Central Coast,0.9976524,Gosford,0.0,False,Central Coast (NSW),151.21341457179147,-33.31705642948526
+2251,1.0,Central Coast,1.0,Gosford,0.0,False,Central Coast (NSW),151.39608553572006,-33.4755584314082
+2256,1.0,Central Coast,1.0,Gosford,0.0,False,Central Coast (NSW),151.271859259191,-33.50809078980126
+2257,1.0,Central Coast,1.0,Gosford,0.0,False,Central Coast (NSW),151.3571378547286,-33.516951365860116
+2258,1.0,Central Coast,1.0,Wyong,0.0,False,Central Coast (NSW),151.33871579896473,-33.31668019247379
+2259,0.9383735,Central Coast,0.9383735,Wyong,0.0,False,Central Coast (NSW),151.37934278708545,-33.18650185844131
+2260,1.0,Central Coast,1.0,Gosford,0.0,False,Central Coast (NSW),151.43682888356594,-33.4284582441922
+2261,1.0,Central Coast,1.0,Wyong,0.0,False,Central Coast (NSW),151.4602187411526,-33.354338794839954
+2262,1.0,Central Coast,1.0,Wyong,0.0,False,Central Coast (NSW),151.53661937674303,-33.20831159201131
+2263,1.0,Central Coast,1.0,Wyong,0.0,False,Central Coast (NSW),151.52483933477242,-33.253503513195945
+2555,1.0,Sydney - South West,0.9431508,Bringelly - Green Valley,0.0,False,Liverpool,150.7452144031383,-33.88200144469583
+2556,1.0,Sydney - South West,1.0,Bringelly - Green Valley,0.0,False,Liverpool,150.72452179989816,-33.94406838258736
+2557,1.0,Sydney - South West,0.9522309,Bringelly - Green Valley,0.0,False,Camden,150.77239737199142,-33.975127694261744
+2558,1.0,Sydney - Outer South West,1.0,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.8051379062282,-34.03085789273246
+2559,1.0,Sydney - Outer South West,1.0,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.79864877897657,-34.04989249167259
+2560,0.9999493,Sydney - Outer South West,0.9999493,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.81748753838022,-34.22532064272795
+2563,1.0,Sydney - Outer South West,1.0,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.7550250342761,-34.09844372235565
+2564,1.0,Sydney - Outer South West,1.0,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.89406195874682,-33.99633999931199
+2565,1.0,Sydney - Outer South West,1.0,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.84986383736307,-33.99084616622799
+2566,1.0,Sydney - Outer South West,1.0,Campbelltown (NSW),0.0,False,Campbelltown (NSW),150.83977426908984,-34.02210600509148
+2567,1.0,Sydney - Outer South West,1.0,Camden,0.0,False,Camden,150.75101576138763,-34.046206893229076
+2568,1.0,Sydney - Outer South West,1.0,Wollondilly,0.0,False,Wollondilly,150.72109928496815,-34.137588676543245
+2569,1.0,Sydney - Outer South West,1.0,Wollondilly,0.0,False,Wollondilly,150.71238999438975,-34.18816538753106
+2570,1.0,Sydney - Outer South West,0.6568017,Camden,0.0,False,Camden,150.58924598234847,-34.05209803209764
+2571,0.9645393,Sydney - Outer South West,0.9645393,Wollondilly,0.0,False,Wollondilly,150.6333754063587,-34.22756799962409
+2572,1.0,Sydney - Outer South West,1.0,Wollondilly,0.0,False,Wollondilly,150.51358979307383,-34.19125572067448
+2573,1.0,Sydney - Outer South West,1.0,Wollondilly,0.0,False,Wollondilly,150.59078897504233,-34.22882682658465
+2574,0.9999866,Sydney - Outer South West,0.9999866,Wollondilly,0.0,False,Wollondilly,150.65314986266588,-34.39037250798441
+2745,1.0,Sydney - Outer West and Blue Mountains,0.9894752,Penrith,0.0,False,Penrith,150.66663362592283,-33.86326914073207
+2747,1.0,Sydney - Outer West and Blue Mountains,0.9929401,Penrith,0.0,False,Penrith,150.75184220507492,-33.73089133968003
+2748,1.0,Sydney - Outer West and Blue Mountains,1.0,Penrith,0.0,False,Penrith,150.73043415305426,-33.80827962110231
+2749,1.0,Sydney - Outer West and Blue Mountains,1.0,Penrith,0.0,False,Penrith,150.68868108930744,-33.69327288754876
+2750,1.0,Sydney - Outer West and Blue Mountains,1.0,Penrith,0.0,False,Penrith,150.67847210581624,-33.75250053737233
+2752,1.0,Sydney - Outer West and Blue Mountains,0.9999983,Penrith,0.0,False,Wollondilly,150.59245598162497,-33.925083322180534
+2753,1.0,Sydney - Outer West and Blue Mountains,0.7973327,Richmond - Windsor,0.0,False,Hawkesbury,150.69352053971335,-33.61669162858195
+2754,1.0,Sydney - Outer West and Blue Mountains,0.900884,Richmond - Windsor,0.0,False,Hawkesbury,150.7232715777657,-33.55552108904985
+2756,1.0,Sydney - Baulkham Hills and Hawkesbury,0.561863,Richmond - Windsor,0.0,False,Hawkesbury,150.76362551888033,-33.30083452847029
+2757,1.0,Sydney - Baulkham Hills and Hawkesbury,1.0,Hawkesbury,0.0,False,Hawkesbury,150.7011657797061,-33.550373751885274
+2758,1.0,Sydney - Baulkham Hills and Hawkesbury,0.9992079,Hawkesbury,0.0,False,Hawkesbury,150.62062590606985,-33.48569235177962
+2759,1.0,Sydney - Outer West and Blue Mountains,1.0,St Marys,0.0,False,Penrith,150.79171881550246,-33.805733082424524
+2760,1.0,Sydney - Outer West and Blue Mountains,0.8066487,St Marys,0.0,False,Penrith,150.7812158461848,-33.760793689801105
+2761,1.0,Sydney - Blacktown,1.0,Mount Druitt,0.0,False,Blacktown,150.84838282061847,-33.73924082743774
+2762,1.0,Sydney - Blacktown,1.0,Blacktown - North,0.0,False,Blacktown,150.87436777748053,-33.699831316040544
+2763,1.0,Sydney - Blacktown,1.0,Blacktown - North,0.0,False,Blacktown,150.88807654876058,-33.72703487009274
+2765,1.0,Sydney - Blacktown,0.6328174,Blacktown - North,0.0,False,Blacktown,150.85658957213013,-33.65168101726812
+2766,1.0,Sydney - Blacktown,1.0,Mount Druitt,0.0,False,Blacktown,150.84507820590366,-33.79607451591324
+2767,1.0,Sydney - Blacktown,1.0,Blacktown,0.0,False,Blacktown,150.8717137055179,-33.76504745996081
+2768,1.0,Sydney - Blacktown,1.0,Blacktown - North,0.0,False,Blacktown,150.93017019252247,-33.7282057094405
+2769,1.0,Sydney - Blacktown,1.0,Blacktown - North,0.0,False,Blacktown,150.90536970033406,-33.70542870412434
+2770,1.0,Sydney - Blacktown,1.0,Mount Druitt,0.0,False,Blacktown,150.81371163738098,-33.75573727128169
+2773,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.62748001032728,-33.76543438556096
+2774,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.6183175344289,-33.732887810221094
+2775,1.0,Sydney - Baulkham Hills and Hawkesbury,0.665627,Hawkesbury,0.0,False,Hawkesbury,150.9954909809471,-33.2802445846692
+2776,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.5509976867773,-33.68535030679698
+2777,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.60674102218806,-33.6917066048125
+2778,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.48904028070544,-33.72145042310219
+2779,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.45566813760107,-33.728322228998486
+2780,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.30986450360237,-33.70250166843409
+2782,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.37973644703717,-33.72166857459523
+2783,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.43406149155206,-33.719781028197524
+2784,1.0,Sydney - Outer West and Blue Mountains,1.0,Blue Mountains,0.0,False,Blue Mountains,150.41766767905102,-33.72920952417251
+2785,0.9902288,Sydney - Outer West and Blue Mountains,0.9902288,Blue Mountains,0.0,False,Blue Mountains,150.23597269301436,-33.70065864386678
+2786,0.9263456,Sydney - Outer West and Blue Mountains,0.8381503,Blue Mountains,0.0,False,Blue Mountains,150.31040089982756,-33.51151880364608
