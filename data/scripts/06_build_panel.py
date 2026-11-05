@@ -22,6 +22,8 @@ VALID_DWELLING = list("FHTOU")
 # Phase boundaries come from NSW student-visa grants (BP0015, primary applicants, rolling 12 months):
 # trough 2021-11, peak 2023-07, ~118k by mid-2024, then flat/declining. Visa grants are a flow and
 # lag/lead enrolments, so these are working labels, not measured stock changes.
+# Since Nov 2026 the project notebook (section 3.6) re-derives its primary phases from students present
+# (BP0019) and uses these visa-grant phases only as the sensitivity definition.
 PHASES = [("0_base2018", None, "2018-12-31"),
           ("1_closure", "2021-01-01", "2021-11-30"),
           ("2_recovery", "2021-12-01", "2023-07-31"),
