@@ -158,7 +158,7 @@ Kịch bản viết theo notebook cũ. Sau khi đổi giai đoạn chính sang B
 
 - Ranh giới giai đoạn theo BP0019 (ngưỡng +15% và −5%) là **phán đoán**, được ghi rõ và kiểm tra bằng `assert`. Dòng độ nhạy theo visa cấp là để kiểm tra phán đoán đó. T1, cửa sổ duy nhất có tín hiệu, chỉ phụ thuộc đáy 11–12/2021 mà cả hai chuỗi đều đồng ý.
 - Việc sửa quy tắc đồng thuận (việc 11) được làm **sau khi** đã biết kết quả. Vì vậy notebook giữ song song kết quả theo quy tắc gốc; cả hai cho hạng B.
-- Khoảng bootstrap dựa trên khoảng 20 cụm SA3, nên các cận sát 0 (ví dụ +0.1, +0.2) không ổn định; không kết luận nào dựa trên chúng.
+- Khoảng bootstrap lấy mẫu lại 31 cụm SA3 (nhóm Cao theo E2 chỉ nằm trong 9 cụm, theo E4 trong 16 cụm; "20" là số hành lang có ≥3 postcode ở RQ2/RQ4, không phải số cụm bootstrap), nên các cận sát 0 (ví dụ +0.1, +0.2) không ổn định; không kết luận nào dựa trên chúng.
 - Notebook overview **không được chạy lại** (cần tải lại từ các trang nguồn); chỉ phần markdown của mục 13 được sửa và HTML được xuất lại từ output đã lưu.
 
 **Chạy lại:** từ `data/notebooks/`: `jupyter nbconvert --to notebook --execute --inplace sydney_student_rent_eda.ipynb` (khoảng 2–3 phút; cần `processed/extracted/` từ notebook overview). Các script kiểm chứng: `cd data/verification && python3 v1_dcj_checks.py` (tương tự cho v2–v6).

@@ -1,253 +1,140 @@
-# Đánh giá mức độ hoàn thiện về lập luận của notebook EDA chính
+# Đánh giá mức độ hoàn thiện về lập luận của notebook EDA chính (phiên bản hiện tại)
 
-**Vai trò đánh giá:** senior data analyst, tập trung vào *chuỗi suy luận* chứ không phải cú pháp: mỗi section có (a) mục đích trong pipeline, (b) phương pháp EDA dùng, (c) phát hiện/khẳng định, (d) khẳng định đó **có được bằng chứng ở chính section đó đỡ không**.
-**Đối tượng:** `notebooks/sydney_student_rent_eda` (số mục theo notebook). **[R]** = đọc từ code/output đã lưu; **[V]** = tôi tính lại bằng `data/verification/v7_argument_checks.py` (chạy lại được).
+**Vai trò đánh giá:** senior data analyst; đánh giá *chuỗi suy luận*: mỗi section có (a) mục đích trong pipeline, (b) phương pháp EDA, (c) phát hiện, (d) bằng chứng ở section đó có đỡ nổi phát hiện không.
+**Đối tượng:** `notebooks/sydney_student_rent_eda` **sau đợt sửa ngày 05/11/2026** (commit `c1b9f7a`: giai đoạn theo BP0019, thước đo Census E4, placebo nhà, kiểm tra DCJ, quy tắc xếp hạng sửa, DA/Airbnb chuyển phụ lục). Số mục theo notebook hiện tại.
+**Quy ước:** **[NB]** = output đã lưu của notebook; **[V]** = tôi tính lại bằng `data/verification/v7_argument_checks.py` (trên cấu hình cũ) và `v8_current_notebook_checks.py` (trên cấu hình hiện tại).
 
-**Thang đánh giá lập luận**
+> **Lưu ý về phiên bản.** Bản đánh giá đầu tiên của tôi (commit `59570ff`) mô tả notebook *trước* đợt sửa. Bản này thay thế nó. Mục 3 ghi rõ phát hiện nào đã được xử lý, còn lại, hoặc cần đính chính.
 
-| Mức | Nghĩa |
-|---|---|
-| **Chặt** | Khẳng định được bằng chứng đỡ trực tiếp; giả định được nêu và kiểm |
-| **Khá** | Đúng hướng, nhưng có một giả định chưa kiểm hoặc một chi tiết chưa nêu |
-| **Hở** | Có bước nhảy: con số hoặc cách diễn đạt mạnh hơn bằng chứng |
-| **Yếu** | Phép thử không có khả năng phân biệt, hoặc không tạo ra kết quả |
+**Thang:** **Chặt** = bằng chứng đỡ trực tiếp, giả định được nêu và kiểm; **Khá** = đúng hướng, còn một giả định chưa kiểm hoặc chưa nêu; **Hở** = phát biểu mạnh hơn bằng chứng; **Yếu** = phép thử không phân biệt được hoặc không tạo ra kết quả.
 
 ---
 
 ## 0. Kết luận tổng
 
-**Mức hoàn thiện lập luận: khá chặt, khoảng 7/10.**
+**Mức hoàn thiện lập luận hiện tại: tốt, khoảng 8/10** (bản trước sửa: ~7/10).
 
-- **Điểm làm tốt nhất:** *kết luận cuối được hiệu chỉnh đúng với bằng chứng* ("hạng B", "không tách được sinh viên khỏi cú sốc chung", "không dùng để xếp hạng hành lang"). Kết luận cuối bền **vì** nó khiêm tốn.
-- **Điểm yếu:** các **phát biểu trung gian** trong từng section mạnh hơn bằng chứng, và chuỗi suy luận chính có **4 mắt xích chưa được bảo vệ** (xem mục 2). Hai kết quả phụ (mùa vụ và danh sách hành lang RQ4) **không đứng vững** khi kiểm tra.
-- **Vì sao điểm không cao hơn:** dự án chưa liệt kê các *giả thuyết cạnh tranh* kèm *dự đoán khác biệt* của từng giả thuyết, nên phần "không tách được" là kết luận *mặc định* chứ chưa phải kết luận *được kiểm bằng placebo/đối chứng*.
-
----
-
-## 1. Phân tích từng section: pipeline → phương pháp EDA → phát hiện → độ chặt lập luận
-
-### Phần mở đầu: câu hỏi, phạm vi, quy tắc xếp hạng bằng chứng
-
-| | |
-|---|---|
-| **Vai trò trong pipeline** | Bước 1 (đặt câu hỏi và luật chơi) |
-| **Phương pháp** | 4 RQ; quy tắc A/B/C **đặt trước khi xem kết quả** |
-| **Khẳng định** | "Hạng bằng chứng quyết định ngôn từ khuyến nghị" |
-| **Mức** | **Chặt** về cấu trúc; **Hở** ở hai chi tiết quy tắc |
-| **Lỗ hổng** | (1) Chỉ số *đồng thuận giữa các định nghĩa exposure* lấy trung bình cả cửa sổ không có tín hiệu (ρ≈0, dấu là nhiễu): theo BP0019 hạng B chỉ vừa đủ ngưỡng 60%. (2) Hạng chỉ xét T1-T3, loại T0 là cửa sổ có hiệu ứng lớn nhất, nên hạng B thực chất dựa vào **một** cửa sổ (T1). (3) Giả thuyết còn ngầm: chưa nêu "dự đoán dấu gì, kết quả nào bác bỏ" |
-
-### §2.1-§2.3 Hiểu dữ liệu và chất lượng
-
-| | |
-|---|---|
-| **Vai trò** | Bước 2-3 (hiểu và kiểm tra dữ liệu) |
-| **Phương pháp** | `info/describe`, thiếu, mã lạ, trùng, khối lượng theo tháng (SQL), thứ trong tuần, IQR so với giới hạn cứng |
-| **Phát hiện** | Có file trùng giữa năm và tháng; thiếu 1.5%/2.6%; trùng 6.0% (giữ); IQR gắn cờ quá nhiều nên chỉ dùng giới hạn cứng |
-| **Mức** | **Chặt** |
-| **Kiểm chứng [V]** | Khẳng định "file năm và tháng chứa gần như cùng các dòng" **đúng ở mức dòng**, không chỉ ở mức đếm: năm 2024, chỉ 18 dòng mỗi phía khác nhau trên 328,183 (0.005%); năm 2022: 9 và 16 dòng |
-| **Lỗ hổng** | Câu "mostly plausible rents" cho các dòng IQR gắn cờ **được nêu mà không được trình bày** (không in hồ sơ các dòng bị loại); chưa phân tích mẫu thiếu (dồn vào mã `U`: 37% thiếu tiền thuê); đoạn thứ trong tuần không phục vụ kết luận nào |
-
-### §3.1-§3.2 Làm sạch và bảng phân tích
-
-| | |
-|---|---|
-| **Vai trò** | Bước 3 |
-| **Phương pháp** | Quy tắc làm sạch bằng SQL, nhật ký đếm từng bước, `assert` bảng = nhật ký |
-| **Phát hiện** | 2,215,281 → 2,129,444 → 1,484,734 dòng |
-| **Mức** | **Khá** |
-| **Lỗ hổng** | Hai giới hạn cứng ($100-$5,000; 0-8 phòng) được **đặt**, không được biện minh bằng dữ liệu (tuy ảnh hưởng nhỏ: 3,272 dòng). Phân khúc `f01` gộp studio với 1PN; giả định "nhu cầu sinh viên mạnh nhất ở căn hộ nhỏ" được nêu nhưng không kiểm (căn 2PN ở chung là nhà ở sinh viên điển hình). File 2018 cơ cấu mã khác các năm sau (mã `U` 7.3% so với 3.6%) |
-
-### §3.3 Co giãn đặc trưng
-
-| | |
-|---|---|
-| **Vai trò** | Bước 3 |
-| **Phương pháp** | min-max và z-score trên 6 biến thể exposure |
-| **Phát hiện** | "Các biến thể tương quan mạnh" |
-| **Mức** | **Yếu** |
-| **Lỗ hổng** | **Phép thử không có khả năng thay đổi kết quả:** heatmap dùng Spearman (bất biến với co giãn đơn điệu); `zscore` không được gọi. Phát hiện "tương quan mạnh" đúng nhưng không cần phép co giãn nào để thấy |
-
-### §3.4 Dựng thước đo exposure (E1/E2/E3)
-
-| | |
-|---|---|
-| **Vai trò** | Bước 3, **mắt xích trung tâm** của cả phân tích |
-| **Phương pháp** | Campus = địa điểm CRICOS bậc đại học; chia ghi danh SA4 về campus theo số khóa học; suy giảm theo khoảng cách (3 mức λ) |
-| **Mức** | **Khá** |
-| **Điểm tốt** | Thành thật gọi đây là *giả định phân bổ*, nêu độ phân giải ~1 km, thử 6 biến thể |
-| **Lỗ hổng** | (1) **Giả định thời gian không đổi** chưa được nêu: ghi danh 2025 dùng để giải thích thay đổi 2018-2021. (2) Đo *nơi học*, không phải *nơi ở* của người thuê. (3) Các biến thể cùng gốc (tương quan ~0.99), nên robustness ở §6.4 và §8 **không kiểm giả định gốc**; thước đo Census độc lập mới làm được (tương quan chỉ 0.50 trong nhóm so sánh) |
-
-### §3.5 Chọn nhóm so sánh
-
-| | |
-|---|---|
-| **Vai trò** | Bước 3 → nền cho RQ3 |
-| **Phương pháp** | Nhóm đối chứng = postcode ≥35% căn hộ và ≥200 hợp đồng; chia tertile theo E2; "so sánh thay đổi, không so mức" |
-| **Mức** | **Hở** |
-| **Lỗ hổng [V]** | **Các nhóm không cân bằng lúc đầu:** giá nền 2018 của căn hộ nhỏ nhóm Cao $530 so với Thấp $410; tỷ lệ căn hộ 0.76 so với 0.62; tương quan hạng giữa E2 và giá nền **0.62**. Lập luận "so thay đổi nên không cần cân bằng mức" chỉ đúng nếu tốc độ tăng không phụ thuộc mức giá, nhưng tương quan hạng giữa giá nền và thay đổi T1 là **+0.29**. Thêm nữa, **13/39 postcode nhóm Cao là chính City of Sydney** (một phần ba) |
-| **Kiểm tra mức độ** | Tương quan hạng E2-T1 **+0.55 → +0.50** sau khi kiểm soát hạng giá nền và tỷ lệ căn hộ: *quan hệ sống sót*. Nhưng chia theo tầng giá nền, chênh lệch T1 (nửa trên − nửa dưới của E2) là **+7.0 (n=47, rẻ), −0.2 (n=33, trung bình), +2.7 (n=37, đắt)**: *hiệu ứng không đồng đều*, dồn vào tầng giá rẻ. Notebook §9.3 tự hiển thị sự mất cân bằng nhưng không dùng nó |
-
-### §3.6 Định nghĩa giai đoạn
-
-| | |
-|---|---|
-| **Vai trò** | Bước 3 → định nghĩa các cửa sổ T0-T3 |
-| **Phương pháp** | Cắt giai đoạn theo đỉnh/đáy của tổng 12 tháng visa cấp NSW |
-| **Mức** | **Khá** |
-| **Lỗ hổng** | Giai đoạn dài ngắn khác nhau (11, 20, 11 và 27 tháng); trung vị trong giai đoạn trộn xu hướng nội bộ (tác giả có nêu ở phần giới hạn). "Đóng cửa 2021" chỉ là phần đuôi: dữ liệu DCJ cho thấy khoảng cách mở từ **Q2/2020**, nên T0 (2018 so với 2021) kéo dài hơn cú sốc. Visa cấp là dòng chảy, lệch pha với sinh viên có mặt (đã nêu) |
-
-### §4.1-§4.3 RQ1: chuyện gì đã xảy ra
-
-| | |
-|---|---|
-| **Vai trò** | Bước 4 (mô tả) |
-| **Phương pháp** | Chỉ số trung vị theo tháng (2018 = 100), bảng trung vị theo giai đoạn, kiểm tra pandas = SQL |
-| **Phát hiện** | "Một chu kỳ chung chi phối; chênh lệch giữa nhóm nhỏ so với phong trào chung" |
-| **Mức** | **Khá** (khẳng định *phụ thuộc thang đo*) |
-| **Kiểm chứng [V]** | Đúng với **tích lũy**: 2018 → giai đoạn cuối, nhóm Cao +31.0% và nhóm Thấp +31.6% (log, trung vị gộp). **Nhưng với từng nhịp thì khác biệt không nhỏ:** sụt 2018 → đóng cửa **−17.9% (Cao) so với −7.2% (Thấp)**, hồi đóng cửa → hồi phục **+19.7% so với +11.8%**. Câu "chênh lệch nhóm nhỏ so với chuyển động chung" chỉ đúng cho tích lũy |
-| **Lỗ hổng** | RQ1 dùng trung vị **gộp theo hợp đồng**, RQ3 dùng trung vị **theo postcode rồi lấy trung vị giữa postcode**: hai ước lượng "thay đổi" khác trọng số, chưa được đối chiếu. **Rent bị làm tròn:** 80% rent là bội của $10 và 77% trung vị postcode-giai đoạn là bội của $10; một bước $10 trên mốc $450 là **2.2%**, tức lớn hơn các chênh lệch 1-3 điểm % được báo cáo (T2, T3, tích lũy) |
-
-### §4.4 Mùa vụ
-
-| | |
-|---|---|
-| **Vai trò** | Bước 4-5 (khai phá thêm, **thêm sau khi đã xem kết quả**) |
-| **Phương pháp** | Log trung vị tháng trừ trung bình trượt căn giữa 12 tháng; trung bình theo tháng lịch; so Cao với Thấp |
-| **Phát hiện** | Tháng 2: Cao +4.1% so với Thấp +0.4%; dương ở 4/5 năm (căn nhỏ) |
-| **Mức** | **Hở** |
-| **Kiểm chứng [V]** | Chênh lệch **thu hẹp mạnh khi tách xu hướng theo từng postcode** thay vì gộp: **+3.6 → +1.4 điểm %** (căn nhỏ) và **+3.3 → +1.6** (chỉ 1PN). Tức hơn một nửa "tín hiệu" đến từ cách gộp nhiều postcode vào một chuỗi trung vị (hiệu ứng cơ cấu: postcode nào hoạt động tháng nào). Mức còn lại (~1.5 điểm %) **nhỏ hơn một bước làm tròn $10 (2.2%)**. Cơ cấu studio so với 1PN **không** là nguyên nhân (1PN-only gần như không đổi) |
-| **Lỗ hổng** | "4/5 năm dương" có xác suất **19%** (6/32) xảy ra nếu không có hiệu ứng, và một trong năm đó là −0.1. Tác giả đã gắn nhãn "gợi ý, không phải kết luận"; nhưng *con số tiêu đề* cần được thay bằng ước lượng theo postcode |
-
-### §5.1-§5.4 RQ2: ở đâu
-
-| | |
-|---|---|
-| **Vai trò** | Bước 4 (mô tả không gian) |
-| **Phương pháp** | Thay đổi log theo postcode với ngưỡng ≥30 hợp đồng ở cả hai giai đoạn; bản đồ; trung vị theo hành lang SA3 (≥3 postcode) |
-| **Phát hiện** | Tăng giá lan rộng: 20 hành lang, từ +21% (Leichhardt) đến +37% (Auburn); Sydney Inner City +27%, hạng 15/20 |
-| **Mức** | **Khá** |
-| **Lỗ hổng** | Kết luận "lan rộng" được đỡ tốt. Nhưng **dữ kiện thú vị nhất không được diễn giải:** nội thành tăng **ít hơn** phần lớn hành lang khác (hạng 15/20), tức chính là câu chuyện "sụt sâu, hồi chưa bù hết" của RQ3, nên RQ2 và RQ3 đang nói *cùng một điều* mà văn bản không nối. Bộ lọc ≥3 postcode, ≥30 hợp đồng loại các postcode mỏng ở 2018 (chọn lọc chưa được thảo luận) |
-
-### §6.0-§6.2 RQ3: liên hệ với exposure (so Cao − Thấp, bootstrap, Spearman)
-
-| | |
-|---|---|
-| **Vai trò** | Bước 5 (suy luận thống kê, **lõi của dự án**) |
-| **Phương pháp** | Chênh lệch trung vị theo nhóm; cluster bootstrap theo SA3 (2,000 lần, khoảng 90%); Spearman; hoán vị (chỉ tham khảo) |
-| **Phát hiện** | T0 −10.4 [−13.9; −5.5]; **T1 +8.8 [+5.1; +11.1]**; T2, T3 ≈ 0; tích lũy −2.7 [−7.3; −0.2] |
-| **Mức** | **Khá chặt** về phương pháp; **Hở** ở độ rộng khoảng tin cậy |
-| **Điểm tốt** | Dùng cluster bootstrap thay vì bootstrap postcode; gắn nhãn hoán vị là lạc quan; báo cáo cả T2, T3 không có tín hiệu |
-| **Lỗ hổng [V]** | (1) **Số cụm mang nhóm "Cao" rất ít:** bootstrap lấy mẫu lại 31 cụm SA3 nhưng nhóm Cao chỉ nằm trong 9 cụm, trong đó **Sydney Inner City chứa 14/39 postcode**, thực chất ~6 cụm có ý nghĩa; bootstrap với vài cụm "được điều trị" thường cho khoảng **quá hẹp**. (2) ~10 cửa sổ kiểm ở mức 90% nên kỳ vọng ~1 kết quả "có ý nghĩa" ngẫu nhiên; kết quả sát biên (tích lũy, cận trên −0.2) không đáng tin. (3) Chỉ T1 đủ mạnh, và T1 là cửa sổ "hồi sau cú sốc": **đúng thứ mà cả giả thuyết sinh viên lẫn giả thuyết cú sốc chung của nội thành đều dự đoán** |
-
-### §6.3 So căn hộ nhỏ với căn 2 phòng ngủ
-
-| | |
-|---|---|
-| **Vai trò** | Bước 5 (thử tính đặc thù của tín hiệu) |
-| **Phương pháp** | Chênh lệch (gap f01) − (gap f2) giữa các nhóm |
-| **Phát hiện** | Khác biệt có ý nghĩa ở 1/3 cửa sổ |
-| **Mức** | **Yếu** |
-| **Lỗ hổng** | **Giả định của phép thử** ("nếu sinh viên quan trọng, căn nhỏ phải mạnh hơn 2PN") **không chắc đúng:** 2PN ở chung là loại nhà sinh viên thuê điển hình (chính `DATASET_DECISION.md` giả định hai người ở chung). Hơn nữa, theo thước đo Census, 2PN cho T1 **+8.2 [+4.5; +11.3]**, gần bằng căn nhỏ (+8.7): kết quả của phép thử phụ thuộc thước đo exposure. Vì phương hướng dự đoán không rõ, kết quả nào cũng diễn giải được |
-
-### §6.4-§6.5 Độ bền và xếp hạng
-
-| | |
-|---|---|
-| **Vai trò** | Bước 5 (kiểm chứng) → ra hạng B |
-| **Phương pháp** | 60 đặc tả (6 biến thể × 2 phân khúc × 5 cửa sổ); bỏ từng hành lang; áp quy tắc A/B/C |
-| **Phát hiện** | Hạng **B** (1/3 cửa sổ; đồng thuận 80%; bỏ-một-hành-lang 100%) |
-| **Mức** | **Khá** |
-| **Lỗ hổng** | (1) Sáu biến thể **cùng gốc** nên "80% đồng thuận" gần như tautology (xem §3.4). (2) Chỉ số đồng thuận gồm cả cửa sổ ρ≈0 (đã nêu). (3) "Bỏ-một-hành-lang 100%" chỉ kiểm *dấu*, và mọi hành lang trong nhóm Cao đều là nội thành/đông, nên không kiểm được điều quan trọng nhất: *đây có phải hiệu ứng của "khu nội thành" nói chung không*. Hạng B vì vậy **đúng nhưng nên được đọc là "có hiệu ứng khu vực", chưa phải "có hiệu ứng sinh viên"** |
-
-### §7 RQ4: hành lang nào đáng xem tiếp
-
-| | |
-|---|---|
-| **Vai trò** | Bước 5-6 (ưu tiên hóa) |
-| **Phương pháp** | So trung vị hành lang với trung vị nhóm Thấp trong 6 phép (2 phân khúc × T1-T3); "nhất quán" = trên chuẩn ≥5/6 và ≥2,000 hợp đồng |
-| **Phát hiện** | Không hành lang gần campus nào vượt đều; hai hành lang vượt đều (Merrylands-Guildford, Ryde-Hunters Hill) đều xa campus |
-| **Mức** | **Yếu** |
-| **Kiểm chứng [V]** | **Quy tắc không có khả năng phân biệt.** Khi hoán vị ngẫu nhiên nhãn hành lang giữa các postcode, trung bình **1.6 hành lang** vượt ngưỡng ≥5/6; thực tế quan sát được **2**; xác suất ngẫu nhiên cho ≥2 là **48%**. Hai hành lang "vượt đều" vì vậy là mức *kỳ vọng ngẫu nhiên*, và "không hành lang gần campus nào vượt" cũng không mang thông tin (kỳ vọng 0.5 trên 6 hành lang, xác suất thấy 0 khá cao). Lý do cấu trúc: T2, T3 là hai cửa sổ không có tín hiệu, nhưng quy tắc đòi vượt chuẩn ở 5/6 phép trong đó |
-| **Hàm ý** | Câu "tăng giá nhanh không đặc trưng cho khu quanh trường" **vẫn đúng**, nhưng được đỡ bởi RQ1, RQ2 và kết quả tích lũy, **không phải bởi RQ4**. Danh sách tên hành lang không nên xuất hiện trong thông điệp. Lưu ý thêm: hoán vị ngẫu nhiên phá tương quan không gian, nên tỷ lệ vượt "do ngẫu nhiên" trong dữ liệu thật có thể còn cao hơn |
-
-### §8 Robustness
-
-| | |
-|---|---|
-| **Vai trò** | Bước 5 (kiểm chứng) |
-| **Phương pháp** | Ngưỡng 30/60/100 hợp đồng; bỏ City of Sydney; nhóm tứ phân vị |
-| **Phát hiện** | Kết quả không đổi |
-| **Mức** | **Khá** |
-| **Lỗ hổng** | Cả ba kiểm tra đổi **tham số**, không đổi **giả định**: cùng E2, cùng giai đoạn, cùng ước lượng. Thiếu ba loại kiểm tra giả định: (i) **placebo** nhà 3-4 phòng ngủ (dữ liệu đã có), (ii) **xu hướng trước COVID** (DCJ), (iii) **thước đo exposure độc lập** (Census). Tác giả nêu đúng giới hạn này ở cuối §8 |
-
-### §9.1-§9.3 Bối cảnh: DA, Airbnb, cấu trúc nền
-
-| | |
-|---|---|
-| **Vai trò** | Bước 5-6 ("còn giải thích nào khác?") |
-| **Phương pháp** | Đếm DA theo năm (10 tháng lấy mẫu), đếm tin Airbnb (1 thời điểm), bảng cấu trúc nền theo nhóm |
-| **Phát hiện** | Không gradient rõ theo nhóm; nhóm Cao/Thấp khác nhau ở nền |
-| **Mức** | **Hở** (về chức năng lập luận) |
-| **Lỗ hổng** | Mục "giải thích khác" nhưng **không có liên kết suy luận** với kết quả (tác giả tự nêu "không điều chỉnh kết quả ở trên"), nên không loại được giải thích nào. DA là đề xuất (22% đề xuất 0 căn), Airbnb một thời điểm. **§9.3 phơi bày đúng vấn đề của §3.5** (nền không cân bằng) nhưng không rút hệ quả. Nên chuyển thành "những gì chưa kiểm được" |
-
-### §10 Kết luận, khuyến nghị, giới hạn
-
-| | |
-|---|---|
-| **Vai trò** | Bước 6 (truyền đạt) |
-| **Phương pháp** | Văn bản sinh tự động theo hạng bằng chứng |
-| **Mức** | **Khá chặt** |
-| **Điểm tốt** | Khuyến nghị đổi theo hạng; nêu rõ "không dùng để xếp hạng hành lang"; mục giới hạn trung thực |
-| **Lỗ hổng** | (1) Phát hiện số 1 ("chênh lệch nhóm nhỏ") phụ thuộc thang đo (xem §4.3). (2) Phát hiện số 4 (mùa vụ) dùng con số bị phóng đại. (3) Phát hiện số 5 (hành lang) dựa trên quy tắc không phân biệt (xem §7). (4) **Mục giới hạn thiếu 4 điều:** làm tròn $10; số cụm mang nhóm Cao; mất cân bằng nền giữa các nhóm; chưa có placebo. (5) Khuyến nghị chưa quy ra AUD/tuần và chưa nối với từng quyết định của người dùng |
+- **Điều đã làm tốt hơn hẳn:** (1) kết luận cuối vẫn hiệu chỉnh đúng với bằng chứng; (2) *phát hiện* được định nghĩa bằng tiêu chí chặt: một cửa sổ chỉ là phát hiện khi khoảng 90% loại trừ 0, **cùng dấu, dưới cả hai thước đo exposure và cả hai cách chia giai đoạn**; (3) có **kiểm định phân biệt** (placebo nhà 3-4PN, kiểm tra xu hướng trước COVID bằng DCJ, thước đo Census độc lập); (4) thay đổi quy tắc xếp hạng sau khi thấy kết quả được **thừa nhận và báo cáo song song với quy tắc gốc**.
+- **Điều còn hở:** hai kết quả phụ vẫn không đứng vững (**mùa vụ**, **danh sách hành lang RQ4**) và vẫn xuất hiện trong mục Phát hiện chung (10.1); còn thiếu **bảng giả thuyết cạnh tranh có dự đoán khác biệt**, nên phần "không tách được" chưa phải kết luận được kiểm trực tiếp.
+- **Điểm tôi đính chính ở phiên bản trước:** mất cân bằng nền giữa hai nhóm **không còn là lỗ hổng lớn** (xem 3.5 dưới đây).
 
 ---
 
-## 2. Chuỗi suy luận chính và 4 mắt xích chưa được bảo vệ
+## 1. Bản đồ pipeline → phương pháp → phát hiện, theo từng section
+
+### 1.1 Luồng tổng thể
 
 ```
-Dữ liệu sạch → [L1] E2 đo "sinh viên có mặt ở khu" → [L2] nhóm Cao/Thấp so sánh được
-  → [L3] cửa sổ thay đổi có ý nghĩa → T0/T1 có chênh lệch → [L4] chênh lệch là của "sinh viên"
+Hỏi (RQ1-4, quy tắc xếp hạng đặt trước)
+  → Hiểu và kiểm tra dữ liệu (§2)  → Làm sạch + dựng bảng (§3.1-3.2)
+  → Dựng 2 thước đo exposure E2/E4, chọn nhóm so sánh, định nghĩa giai đoạn (§3.3-3.6)
+  → Mô tả (RQ1 §4, RQ2 §5) → Kiểm định liên hệ (RQ3 §6: so nhóm, placebo, trước COVID, xếp hạng)
+  → Ưu tiên (RQ4 §7) → Độ bền (§8) → Giải thích khác (§9) → Phát hiện, khuyến nghị (§10)
 ```
 
-| Mắt xích | Hiện trạng | Bằng chứng |
-|---|---|---|
-| **L1: E2 đo sinh viên** | Nêu là giả định, chưa kiểm bằng nguồn độc lập trong notebook chính | E2 và Census chỉ tương quan 0.50 trong nhóm so sánh; 49% postcode đổi nhóm |
-| **L2: nhóm so sánh được** | "So thay đổi không so mức" chưa đủ | Nền $530 so với $410; tỷ lệ căn hộ 0.76 so với 0.62; 1/3 nhóm Cao là City of Sydney; hiệu ứng dồn vào tầng giá rẻ (+7.0, −0.2, +2.7) |
-| **L3: cửa sổ có nghĩa** | Phụ thuộc cắt giai đoạn và làm tròn rent | Cắt theo BP0015 làm "tích lũy" mất ý nghĩa khi đổi sang BP0019; bước làm tròn $10 = 2.2% |
-| **L4: là của sinh viên** | Chưa có phép thử phân biệt | Placebo nhà 3-4PN: nhịp sụt cũng có (−7.6) nhưng **không hồi** (−0.1); 2PN theo Census cũng hồi |
+### 1.2 Bảng chi tiết
 
-**Nhận định:** phần kết luận "không tách được" thực chất là hệ quả của việc **L4 chưa được kiểm**, không phải bằng chứng về giới hạn của dữ liệu. Với dữ liệu đã có (nhà 3-4PN, DCJ, Census) có thể *thu hẹp* được L4 trước khi xin dữ liệu mới.
+| Section | Mục đích | Phương pháp EDA | Phát hiện | Lập luận | Điều còn lại |
+|---|---|---|---|---|---|
+| **Mở đầu** (RQ, phạm vi, quy tắc xếp hạng) | Đặt luật chơi trước kết quả | 4 RQ; hạng A/B/C; hạng cuối = hạng thấp hơn của E2 và E4; "phát hiện" = lặp lại ở 4 đặc tả | Quy tắc rõ, có ghi chú sửa đổi 05/11 | **Chặt** | Giả thuyết còn ngầm (không có dự đoán dấu và điều bác bỏ). Ngưỡng 60%/80% là tùy ý. "Cửa sổ có tín hiệu" chọn theo chính kết quả, nên 100% đồng thuận một phần là hệ quả của việc chọn |
+| **§2.1-2.3** Hiểu dữ liệu | Biết dữ liệu trước khi giả định | `info/describe`, mẫu thiếu (`any/all(axis=1)`, theo mã nhà và năm), hồ sơ dòng bị loại, trùng, IQR so với giới hạn cứng, SQL theo tháng | Thiếu dồn vào mã `U` (83% thiếu tiền thuê); 0.09% hợp đồng căn hộ bị giới hạn cứng loại; file năm = file tháng | **Chặt** | Đã xử lý các lỗ hổng bản trước. Còn: đoạn "thứ trong tuần" không phục vụ kết luận nào |
+| **§3.1-3.2** Làm sạch, bảng phân tích | Bảng sạch, có kế toán | SQL + nhật ký đếm; `assert` nối nhật ký với hồ sơ dòng bị loại | 2,215,281 → 2,129,444 → 1,484,734 | **Chặt** | Giới hạn $100-$5,000 nay có bằng chứng đi kèm (hồ sơ dòng bị loại) |
+| **§3.3** Scaling | Đưa các thước đo lên cùng thang | Kiểm chứng Spearman và tertile bất biến; log + z-score để so E2 với E4 từng postcode | Postcode "gần campus nhưng ít sinh viên sống" và ngược lại | **Chặt** | Bước này nay có chức năng thật |
+| **§3.4** Dựng exposure | Mắt xích trung tâm của cả phân tích | E2 (campus × ghi danh × khoảng cách), E3, E1; **thêm E4 (Census)** | E2 và E4 là hai đại lượng khác nhau | **Khá** | **Giả định thời gian không đổi** vẫn chưa nêu: ghi danh 2025 và Census 2021 dùng để giải thích thay đổi 2018-2021. Cả hai đo nơi học hoặc nơi ở của *mọi* sinh viên đại học, không riêng sinh viên quốc tế |
+| **§3.5** Nhóm so sánh | Có nhóm đối chứng hợp lý | Tertile theo E2 và theo E4; bảng chéo; "so thay đổi, không so mức" | Chỉ 49% postcode cùng nhóm giữa E2 và E4 | **Khá** | Xem mục 3 (đính chính): E4 *cân bằng* giá nền; 13/39 postcode nhóm Cao (E2) là City of Sydney |
+| **§3.6** Giai đoạn | Cắt thời gian thành cửa sổ so sánh | BP0019 (số có mặt, chính) với `assert` đáy/đỉnh/ngưỡng +15%/−5%; BP0015 làm độ nhạy | Hai chuỗi cùng đồng ý đáy 11-12/2021; khác đỉnh | **Khá chặt** | Ngưỡng +15% và −5% là phán đoán (được ghi và `assert`). T0 trải 2018→2021, trong khi DCJ cho thấy khoảng cách mở từ 2020Q2 |
+| **§4.1-4.3** RQ1: chuyện gì xảy ra | Mô tả nhịp chung | Chỉ số trung vị theo tháng, bảng trung vị theo giai đoạn, pandas = SQL | Căn hộ nhỏ ≈ +40% so với 2018 ở *mọi* nhóm; nhịp chung chi phối **tích lũy** | **Khá chặt** | 10.1 đã giới hạn câu "chênh lệch nhỏ" cho *tích lũy*, đúng. RQ1 dùng trung vị gộp hợp đồng, RQ3 dùng trung vị theo postcode: hai ước lượng "thay đổi" khác trọng số, chưa đối chiếu. 80% rent là bội của $10 (một bước $10 = 2.2% ở mốc $450) nên chênh lệch 1-3 điểm % ở T2, T3, tích lũy nằm trong độ phân giải |
+| **§4.4** Mùa vụ | Có "dấu vân tay" lịch học? | Log trung vị gộp − trung bình trượt 12 tháng; trung bình theo tháng; Cao − Thấp | Tháng 2: Cao +4.1% so với Thấp +0.4%; dương 4/5 năm | **Hở** | **Không đổi so với bản cũ.** **[V]** tách xu hướng theo *từng postcode* thì chênh lệch còn **+1.4 điểm %** (căn nhỏ), nhỏ hơn một bước làm tròn; "4/5 năm dương" có xác suất 19% nếu không có hiệu ứng. Được thêm sau khi đã thấy kết quả. Mục 10.1 #6 lặp lại con số này **không kèm cảnh báo** |
+| **§5** RQ2: ở đâu | Mô tả không gian | Thay đổi log theo postcode (≥30 hợp đồng), bản đồ, trung vị theo hành lang | 20/20 hành lang tăng, +26% đến +41%; Inner City +30%, hạng 15/20 | **Khá** | "Lan rộng" được đỡ tốt. Nội thành tăng *ít hơn* phần lớn hành lang (hạng 15/20) chính là câu chuyện "sụt sâu, hồi chưa bù hết" của RQ3 nhưng văn bản chưa nối hai điều này |
+| **§6.0-6.3** RQ3: so nhóm | Có chênh lệch Cao − Thấp không | Chênh lệch trung vị theo nhóm; **cluster bootstrap theo SA3**; Spearman; hoán vị (chỉ tham khảo); E2 và E4 | T0 −10.7 (E4: −6.6); **T1 +10.0 (E4: +10.0)**; T2, T3 ≈ 0 | **Khá chặt** | 6.3 nay thừa nhận "tính đặc thù của căn nhỏ không vững" (E2 +2.6, E4 −0.4). Số cụm mang nhóm Cao (xem 3.3 dưới đây) |
+| **§6.4** Placebo nhà 3-4PN | Tách "khu" khỏi "sinh viên" | Cùng cửa sổ, cùng nhóm, phân khúc nhà riêng; biểu đồ tổng hợp | Nhịp **sụt cũng có ở nhà** (−7.6 đến −8.8); nhịp **hồi nhỏ hơn nhiều** | **Chặt** | **[V]** Có thể định lượng bằng tương phản căn hộ trừ nhà: T1 **+8.2 [+5.3; +10.5]** (E2), **+6.8 [+3.3; +9.5]** (E4): nhịp hồi *đặc thù căn hộ*, vững ở cả hai thước đo. T0: −1.5 [−5.3; +1.3] và −0.8 [−2.2; +3.6]: nhịp sụt *không* đặc thù căn hộ |
+| **§6.5** Trước COVID (DCJ) | Hai nhóm có đi song song trước COVID không | Độ dốc hồi quy 8 quý, có khoảng bất định; bản cân bằng; đối chiếu với bond | "Gần song song, không phải song song": tối đa 1.4 điểm %/năm; khoảng cách mở sau khi biên giới đóng, khép vào 2022Q4 | **Chặt** | Định nghĩa cố định, tránh nhạy cảm cách gộp năm. Đoạn ngoại suy "−4 điểm % sau 3 năm" giả định xu hướng tuyến tính; với E4 độ trôi chỉ −0.42/năm (≈ −1.3 sau 3 năm), nên nên nêu *khoảng* −1.3 đến −4 thay vì một số |
+| **§6.6-6.7** Độ bền, hạng | Ra hạng bằng chứng | 8 định nghĩa exposure × cửa sổ; bỏ từng hành lang; bảng 4 đặc tả; hạng theo quy tắc sửa **và** quy tắc gốc | Hạng **B** ở cả 4 tổ hợp; chỉ 4 cửa sổ là phát hiện | **Chặt** | 6/8 định nghĩa exposure là biến thể của E2, nên với tiers E2 "đồng thuận" gần như tautology; chính **tiers E4 + quy tắc "hạng thấp hơn"** mới là phép kiểm có nghĩa. Ngưỡng và "cửa sổ có tín hiệu" chọn theo kết quả |
+| **§7** RQ4: hành lang | Ưu tiên hóa | Trung vị hành lang so với trung vị nhóm Thấp; "nhất quán" = trên chuẩn ≥5/6 | Chỉ Parramatta vượt đều (khu xa campus) | **Yếu** | **[V]** Quy tắc **không phân biệt được với ngẫu nhiên**: với nhãn hành lang hoán vị ngẫu nhiên, trung bình **1.1 hành lang** vượt ngưỡng; quan sát được **1**; xác suất ngẫu nhiên cho ≥1 là **70%**. Xác suất "không hành lang nào trong 6 hành lang exposure cao vượt" nếu chỉ do ngẫu nhiên: **71%**. Cả "Parramatta" lẫn "không hành lang gần campus nào" đều không mang thông tin |
+| **§8** Độ bền | Kết quả có đổi theo lựa chọn không | Ngưỡng 30/60/100; bỏ City of Sydney; tứ phân vị; **E4; giai đoạn visa; IQR theo ô; bỏ trùng** | T1 trong khoảng +8.8 đến +11.3 ở mọi kịch bản | **Chặt** | Khác bản cũ: nay *đổi giả định*, không chỉ đổi tham số |
+| **§9** Giải thích khác | "Còn giải thích nào khác?" | Cấu trúc nền theo hai cách chia; Housing Audit (bối cảnh); **9.3 "những gì dữ liệu không kiểm được"** | Supply và Airbnb: đã xem, không kiểm được | **Khá** | Trung thực. Nhưng giả thuyết cạnh tranh *chính* (làm việc từ xa, du lịch, văn phòng nội thành) chỉ xuất hiện trong lời cảnh báo, chưa được liệt kê kèm dự đoán |
+| **§10** Phát hiện, khuyến nghị, giới hạn | Truyền đạt | Văn bản sinh từ số liệu; khuyến nghị theo hạng | 7 phát hiện, 6 khuyến nghị | **Khá chặt** | #1-#5 vững. **#6 (mùa vụ) và #7 (hành lang)** dựa trên hai kết quả yếu ở trên. Giới hạn đã bổ sung nhiều (phong tỏa 2021, đa so sánh, nhãn giai đoạn) nhưng còn thiếu: làm tròn $10, tương phản căn hộ trừ nhà, giả định thời gian không đổi của exposure. Khuyến nghị chưa quy ra AUD/tuần |
 
 ---
 
-## 3. Việc cần làm để hoàn thiện lập luận (xếp theo mức tác động)
+## 2. Chuỗi suy luận chính: 4 mắt xích, tình trạng hiện tại
 
-| # | Việc | Mắt xích | Công sức | Tác động lên kết luận |
+```
+Dữ liệu sạch → [L1] E2/E4 đo "sinh viên ở khu" → [L2] nhóm Cao/Thấp so sánh được
+  → [L3] cửa sổ thay đổi có nghĩa → T0/T1 có chênh lệch → [L4] chênh lệch là của "sinh viên"
+```
+
+| Mắt xích | Bản trước | Hiện tại | Bằng chứng |
+|---|---|---|---|
+| **L1** exposure đo sinh viên | Chưa kiểm độc lập | **Đã kiểm một phần** (E4 độc lập với E2); kết quả T1 lặp lại ở hai thước đo | T1 +10.0 ở cả E2 và E4 [NB]; tương quan hạng E2-E4 chỉ 0.50 trong nhóm so sánh |
+| **L2** nhóm so sánh được | Nghi ngờ do nền không cân bằng | **Phần lớn được bảo vệ** | **[V]** Tiers E4 *cân bằng nền* (trung vị nền $498 so với $482) mà T1 vẫn +10.0. Với E2, tương quan hạng T1 giảm rất ít khi kiểm soát giá nền và tỷ lệ căn hộ (+0.54 → +0.51; E4: +0.57 → +0.53), và quan hệ dương ở **cả ba tầng giá nền** (E2: +8.6/+3.6/+2.9; E4: +8.3/+6.5/+4.6) |
+| **L3** cửa sổ có nghĩa | Phụ thuộc cắt giai đoạn | **Được kiểm** (hai cách chia giai đoạn; T1 chỉ phụ thuộc đáy 11-12/2021, hai chuỗi đồng ý) | §3.6, §8 |
+| **L4** là của sinh viên | Chưa có phép phân biệt | **Thu hẹp, chưa đóng:** nhịp hồi *đặc thù căn hộ* (+6.8 đến +8.2, vững), nhịp sụt *đặc thù khu*. Nhưng "đặc thù căn hộ" không có nghĩa "do sinh viên": cú sốc cầu căn hộ nội thành nói chung (làm việc từ xa, du lịch, di cư) cũng ảnh hưởng căn hộ nhiều hơn nhà | Placebo và tương phản căn hộ trừ nhà; 6.3 |
+
+**Nhận định:** kết luận hiện tại ("tín hiệu tạm thời, chưa tách được khỏi chu kỳ nội thành") nay **được hỗ trợ bằng kiểm định**, không chỉ là mặc định. Để đóng L4 cần một phép thử với dự đoán *khác nhau* giữa giả thuyết sinh viên và giả thuyết cú sốc nội thành (ví dụ: khu có campus nhưng ít văn phòng/du lịch; hoặc dữ liệu ngày bắt đầu hợp đồng).
+
+---
+
+## 3. Phát hiện của bản đánh giá trước, so với notebook hiện tại
+
+| # | Phát hiện bản trước | Tình trạng | Ghi chú |
+|---|---|---|---|
+| 1 | Chưa có placebo | **Đã xử lý** | §6.4. Thêm: tương phản căn hộ trừ nhà để định lượng (3.1 dưới) |
+| 2 | Kết quả tích lũy mong manh | **Đã xử lý** | Hạ xuống mô tả; ghi nhận nhà 3-4PN tăng chậm hơn |
+| 3 | Chỉ số đồng thuận lẫn cửa sổ ρ≈0 | **Đã xử lý** | Tính ở cửa sổ có tín hiệu; quy tắc gốc báo cáo song song |
+| 4 | Exposure cùng gốc, chưa kiểm độc lập | **Đã xử lý một phần** | E4; hạng = hạng thấp hơn |
+| 5 | Chưa kiểm xu hướng trước COVID | **Đã xử lý** | §6.5 |
+| 6 | DA/Airbnb không có chức năng suy luận | **Đã xử lý** | Chuyển phụ lục; §9.3 |
+| 7 | Phép so căn nhỏ với 2PN có giả định không chắc | **Đã xử lý một phần** | Văn bản nay thừa nhận không vững; giả định hướng dự đoán vẫn chưa được biện minh |
+| 8 | Mùa vụ bị phóng đại | **Còn nguyên** | §4.4 và 10.1 #6 không đổi |
+| 9 | RQ4 không phân biệt được với ngẫu nhiên | **Còn nguyên** | **[V]** vẫn đúng với cấu hình mới (xem §7 trong bảng) |
+| 10 | Làm tròn rent $10 | **Còn nguyên** | Không được nêu |
+| 11 | Mất cân bằng nền giữa hai nhóm | **Đính chính: không còn là lỗ hổng lớn** | Xem L2 ở trên. Tôi đã đánh giá quá nặng ở phiên bản trước vì chỉ thử trên tiers E2 và giai đoạn cũ |
+| 12 | Ít cụm mang nhóm Cao, CI có thể hẹp | **Đã giảm** | **[V]** Với E4, nhóm Cao trải trên **16/31** cụm (E2: 9/31), 5-6 cụm có ≥3 postcode. T1 vẫn +10.0 [+6.2; +13.3] ở E4, nên kết luận không phụ thuộc vào việc E2 chỉ có vài cụm |
+| 13 | Giả thuyết cạnh tranh chưa liệt kê | **Còn nguyên** | Chưa có bảng dự đoán khác biệt |
+
+### 3.1 Phát hiện mới: tương phản căn hộ trừ nhà (dùng chính placebo của notebook)
+
+Notebook đọc placebo bằng lời ("nhà cùng chia sẻ nhịp sụt, ít hơn nhịp hồi"). Có thể thành một đại lượng có khoảng tin cậy: lấy chênh lệch Cao − Thấp của *căn hộ nhỏ* trừ chênh lệch Cao − Thấp của *nhà* trong cùng postcode **[V]**:
+
+| Cửa sổ | Tiers E2 | Tiers E4 | Đọc |
+|---|---|---|---|
+| T0 (2018 → đóng cửa) | −1.5 [−5.3; +1.3] | −0.8 [−2.2; +3.6] | Nhịp sụt **không** đặc thù căn hộ |
+| **T1 (hồi)** | **+8.2 [+5.3; +10.5]** | **+6.8 [+3.3; +9.5]** | Nhịp hồi **đặc thù căn hộ**, vững |
+| Tích lũy | +3.9 [−1.7; +7.1] | +7.4 [+3.7; +10.0] | Căn hộ khu Cao tăng *nhiều hơn* nhà cùng khu (E4 loại trừ 0) |
+
+Hàm ý: ở mức tích lũy, "không có chênh lệch" của căn hộ (−2.7 đến +1.1) che một điều: nhà ở khu Cao tăng chậm hơn nhà khu Thấp 5-8 điểm %, nên căn hộ khu Cao đang tăng *khá hơn mặt bằng khu của chính nó*. Thông điệp này cần cẩn trọng (vẫn phù hợp cả giả thuyết cầu căn hộ nội thành), nhưng nó làm cho kết luận "không có gì" **chính xác hơn**.
+
+---
+
+## 4. Việc còn lại để hoàn thiện lập luận (xếp theo tác động)
+
+| # | Việc | Mắt xích | Công sức | Tác động |
 |---|---|---|---|---|
-| **A1** | **Liệt kê giả thuyết cạnh tranh** (sinh viên; làm việc từ xa/văn phòng nội thành; du lịch; tâm lý rời nội thành) kèm **dự đoán khác biệt** (loại nhà, tháng, khu CBD so với khu có campus nhưng ít văn phòng), rồi chọn phép thử theo từng dự đoán | L4 | Thấp (viết) | Biến "không tách được" thành kết luận được kiểm |
-| **A2** | **Thêm placebo nhà 3-4PN** cạnh căn hộ nhỏ | L4 | Thấp | Đổi diễn giải: nhịp sụt là của cả khu, chỉ nhịp hồi đặc thù căn hộ |
-| **A3** | **Cân bằng nền:** báo cáo kèm tầng giá nền (hoặc hồi quy hạng có kiểm soát giá nền, tỷ lệ căn hộ); tách City of Sydney khỏi nhóm Cao ở bảng chính | L2 | Thấp-TB | Có thể thu hẹp T1 ở tầng giá trung bình |
-| **A4** | **Thay RQ4 bằng bảng mô tả** hoặc thêm hiệu chỉnh bằng hoán vị (đưa ngưỡng "vượt đều" về mức ngẫu nhiên); bỏ tên hành lang khỏi thông điệp | §7 | Thấp | Loại một kết luận không có thông tin |
-| **A5** | **Báo cáo mùa vụ theo ước lượng từng postcode** (+1.4 điểm %), nêu rõ nhỏ hơn bước làm tròn | §4.4 | Thấp | Hạ cấp từ "gợi ý" xuống "chưa phân biệt được" |
-| **A6** | **Khoảng tin cậy cho tình huống ít cụm mang nhóm Cao:** bootstrap có cân nhắc, hoặc báo cáo kèm "~6 cụm hiệu dụng"; ghi cảnh báo đa so sánh | §6 | Thấp-TB | Khoảng rộng hơn; chỉ T0, T1 còn đứng |
-| **A7** | **Thống nhất ước lượng "thay đổi"** giữa RQ1 (gộp hợp đồng) và RQ3 (trung vị postcode); thêm cảnh báo làm tròn $10 | §4-§6 | Thấp | Nhất quán; hạ độ tin cậy các chênh lệch 1-3 điểm % |
-| **A8** | **Sửa quy tắc xếp hạng:** đồng thuận chỉ tính ở cửa sổ có tín hiệu; hạng = hạng thấp hơn của hai thước đo (E2 và Census); không dùng T0 làm "phát hiện" riêng nếu chưa qua placebo | §6.5 | Thấp | Hạng B thành hạng có nghĩa hơn |
-| **A9** | **Viết lại phát hiện #1** theo thang: "tích lũy giống nhau (+31% so với +32%), nhưng nhịp sụt gấp ~2.5 lần ở nhóm Cao" | §4.3, §10 | Thấp | Chính xác hơn |
-| **A10** | **Bổ sung 4 điều vào mục giới hạn:** làm tròn $10; số cụm mang nhóm Cao; nền không cân bằng; chưa placebo | §10 | Thấp | Trung thực hơn |
-| **A11** | Chuyển §9 thành "những gì chưa kiểm được"; dùng §9.3 để biện minh cho A3 | §9 | Thấp | Đúng chức năng |
+| **B1** | **Bảng giả thuyết cạnh tranh** (sinh viên; làm việc từ xa/văn phòng; du lịch; di cư; cung) với *dự đoán khác biệt* và phép thử tương ứng; đưa tương phản căn hộ trừ nhà vào bảng 4 đặc tả | L4 | Thấp | Biến "không tách được" thành kết luận có cấu trúc |
+| **B2** | **Hạ hoặc bỏ phát hiện mùa vụ**: dùng ước lượng theo postcode (+1.4 điểm %), nêu nhỏ hơn bước làm tròn; thêm cảnh báo vào 10.1 #6 | §4.4, §10 | Thấp | Loại một số liệu phóng đại |
+| **B3** | **Thay RQ4 bằng bảng mô tả**, hoặc hiệu chỉnh ngưỡng bằng hoán vị; bỏ #7 khỏi phát hiện và bỏ "Parramatta" khỏi thông điệp | §7, §10 | Thấp | Loại một kết luận không có thông tin |
+| **B4** | Nêu **giả định thời gian không đổi** của exposure (ghi danh 2025, Census 2021) và nêu rõ E4 đo *mọi* sinh viên đại học | §3.4, §10.3 | Thấp | Trung thực |
+| **B5** | Nêu **bước làm tròn $10 = 2.2%** ở mốc $450 và đối chiếu RQ1 (trung vị gộp) với RQ3 (trung vị postcode) | §4, §10.3 | Thấp | Đặt đúng độ phân giải |
+| **B6** | Ở 6.5, nêu độ trôi trước COVID thành **khoảng (−1.3 đến −4 điểm %)** thay vì một số | §6.5 | Thấp | Chính xác |
+| **B7** | Nối RQ2 ("nội thành hạng 15/20") với RQ3 trong văn bản | §5 | Thấp | Mạch lạc |
+| **B8** | Quy đổi AUD/tuần (+10 điểm % trên mốc $570 ≈ +$57/tuần) | §10 | Thấp | Ngôn ngữ business |
+| **B9** | Biện minh hướng dự đoán của phép so căn nhỏ với 2PN, hoặc bỏ 6.3 (có thể thay bằng tương phản căn hộ trừ nhà) | §6.3 | Thấp | Bỏ phép thử không có hướng rõ |
 
-**Thứ tự:** A1-A2 trước (rẻ nhất, tác động lớn nhất lên L4), sau đó A3-A5, rồi A6-A11 khi chỉnh văn bản.
+**Thứ tự:** B1 trước (tác động lớn nhất lên L4); B2-B3 tiếp theo (loại hai kết quả yếu khỏi thông điệp); B4-B9 khi chỉnh văn bản.
 
 ---
 
-## 4. Điều chỉnh các nhận định trước đó của tôi (để bản ghi chính xác)
+## 5. Đính chính các nhận định trước của tôi
 
-- Ở các tài liệu trước, tôi viết bootstrap dùng "~20 cụm". **Sai:** bootstrap lấy mẫu lại **31 cụm SA3**; con số 20 là số hành lang có ≥3 postcode trong bảng RQ2/RQ4. Điểm đúng là nhóm "Cao" chỉ do **9 cụm** mang (thực chất ~6). Đã sửa trong `PRESENTATION_AND_DECISIONS.md`.
-- Hai phát hiện của đánh giá này **mới** so với `PRESENTATION_AND_DECISIONS.md`, nơi Slide 5 vẫn dùng chúng: (i) thông điệp 3 (hành lang) dựa vào RQ4, vốn không phân biệt được với ngẫu nhiên; (ii) thông điệp 4 (mùa vụ) dùng con số +4.1% so với +0.4% của cách gộp, trong khi ước lượng theo postcode chỉ còn chênh lệch ~1.4 điểm %. Nếu bạn đồng ý với A4 và A5, hai thông điệp này nên được viết lại: thông điệp 3 dựa trên RQ1, RQ2 và kết quả tích lũy; thông điệp 4 hạ xuống "chưa phân biệt được".
+- **Số cụm bootstrap.** Ở các tài liệu trước tôi viết "~20 cụm". **Sai.** Bootstrap lấy mẫu lại **31 cụm SA3**; số 20 là số hành lang có ≥3 postcode ở RQ2/RQ4. Nhóm "Cao" theo E2 nằm trong 9 cụm (6 có ≥3 postcode); theo E4: 16 cụm (5 có ≥3). Lỗi này lan sang `EDA_IMPROVEMENT_VERIFICATION.md` mục 8 (do phiên khác trích lại); đã sửa ở đó.
+- **Mất cân bằng nền.** Bản trước đánh giá là "Hở"; sau khi kiểm tra trên cấu hình hiện tại (E4, giai đoạn BP0019) tôi hạ xuống "Khá" và rút lại kết luận nặng: T1 vẫn vững khi kiểm soát nền và dương ở cả ba tầng giá.
+- **"Nhà không hồi".** Ở các tài liệu trước tôi mô tả placebo là "nhà không hồi (−0.1)". Chính xác hơn: "nhà hồi ít hơn nhiều" (E2 ≈ 0; E4 +3.1 [+0.1; +5.2]), như phiên sửa đã đính chính.
+- **Slide 5 của `PRESENTATION_AND_DECISIONS.md`** vẫn dùng số của cấu hình cũ (xem `EDA_IMPROVEMENT_VERIFICATION.md` phần E). Thông điệp 3 (hành lang) và 4 (mùa vụ) nên viết lại theo B2-B3.
 
-## 5. Giới hạn của bản đánh giá này
+## 6. Giới hạn của bản đánh giá này
 
-- Mức Chặt/Khá/Hở/Yếu là **phán đoán của tôi**; các kiểm tra [V] là phép thử độc lập nhưng cũng dùng bootstrap/hoán vị với 1,000 lần lặp nên các cận sát 0 không ổn định.
-- Phép hoán vị ở §7 giữ nguyên tương quan trong từng postcode nhưng phá tương quan không gian; kết quả "48%" là mức tham chiếu, không phải p-value chính thức.
-- Phép kiểm tra phân tầng giá nền ở §3.5 dùng chia đôi E2 *trong từng tầng* (không phải tertile của notebook), nên không so thẳng được với +8.8; nó chỉ cho thấy *tính không đồng đều*.
-- Tôi **không chạy lại** toàn bộ notebook và **không thay đổi** notebook; đánh giá dựa trên code, output đã lưu, và các kiểm tra riêng.
+- Mức Chặt/Khá/Hở/Yếu là **phán đoán của tôi**. Các phép kiểm [V] dùng bootstrap và hoán vị 1,000-2,000 lần; cận sát 0 không ổn định.
+- Phép hoán vị ở RQ4 phá tương quan không gian, nên "70%/71%" là mức tham chiếu chứ không phải p-value; trong dữ liệu thật tương quan không gian có thể làm tỷ lệ vượt do ngẫu nhiên *cao hơn*.
+- Tương phản căn hộ trừ nhà dùng các postcode có đủ ≥30 hợp đồng cả hai phân khúc (n=110-113 trên 117), nên mẫu hơi nhỏ hơn mẫu chính.
+- Tôi **không chạy lại** notebook, và **không sửa** notebook; đánh giá dựa trên code, output đã lưu và các kiểm tra riêng. `v7_argument_checks.py` chạy trên cấu hình cũ (giai đoạn visa-cấp); `v8_current_notebook_checks.py` chạy trên cấu hình hiện tại.
