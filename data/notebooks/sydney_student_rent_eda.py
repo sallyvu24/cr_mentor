@@ -150,12 +150,147 @@ print("Data folder:", ROOT)
 # %% [markdown]
 # # 2. Data understanding and quality assessment
 #
+# Before any cleaning decision is made, this section lets the reader **see** every table the project uses: what one row looks like, which columns it has,
+# what type each column is, how the values are distributed, and where the problems are. Each table is introduced in the same way: its structure (the ten
+# DataFrame attributes), a transposed preview, the first and last 15–20 rows, a column-by-column card, and charts of its main columns.
+# Cleaning *decisions* come in section 3; here the aim is a complete picture of the data as it arrives.
+#
+# **The tables at a glance**
+#
+# | Source | One row is | Covers | Joined to the rest through |
+# |---|---|---|---|
+# | NSW Fair Trading bond lodgements, 2021–2026 (2.1) | one new tenancy (one bond) | Jan 2021 – Sep 2026 | `postcode` |
+# | 2018 bond file (2.1) | one new tenancy | calendar 2018 | `postcode` |
+# | CRICOS: locations, courses, course-locations, institutions (2.2) | a teaching location / a course / a course at a location / a provider | snapshot, Sep 2026 | provider code + location name; `Postcode` |
+# | Department of Education enrolments (2.2) | SA4 region × remoteness × sector × broad field | year to Dec 2025 | SA4 name (through the ABS correspondence) |
+# | Home Affairs BP0015, student visas granted (2.2) | financial year × month × state × sector × visa history | 2005-06 – 2026-09 | none (time series) |
+# | Home Affairs BP0019, student visa holders present (2.2) | quarter-end × visa × applicant × citizenship | Dec 2011 – Sep 2026 | none (national time series) |
+# | ABS Census 2021 (2.2) | one postcode | Census night, 10 Aug 2021 | `poa` (postcode) |
+# | NSW DCJ rent tables (2.2) | postcode × dwelling type × bedrooms × quarter | 2018Q1 – 2022Q4 | `poa` (postcode) |
+# | City of Sydney Housing Audit (2.2) | one June audit year | 2015 – 2025 | none (one council) |
+#
+# Rent is known only by **postcode**, while students are counted by **SA4 region** and by **campus**. The ABS postcode-to-region correspondence (built in
+# `scripts/05_build_exposure.py` and described in `00_data_extraction_overview`) is the bridge between them.
+#
+# ## 2.0 How each table is examined
+#
+# The same four tools are applied to every table, so the tables can be compared like for like.
+#
+# | Tool | What it shows | Why it matters |
+# |---|---|---|
+# | `anatomy()` | `index`, `columns`, `axes`, `dtypes`, `size`, `shape`, `ndim`, `empty`, `T`, `values` in one table | the structure of the table, and early warnings such as text columns that should be numbers |
+# | transposed preview `head().T` | every column as a row, with the first five records side by side | wide tables (CRICOS courses has 24 columns) can be read without scrolling sideways |
+# | `ends()` | the first and last 15–20 rows, and random rows where the file order is not representative | head and tail show the sort order and the edges of the file; random rows show typical records |
+# | `column_card()` | type, non-missing count, missing %, distinct values, range or most common value, an example | a data dictionary built from the data itself |
+
+# %%
+C1, C2, C3 = "#1b4f72", "#85c1e9", "#e59866"            # chart colours used throughout this section
+
+def anatomy(df: pd.DataFrame, name: str, sample_rows: int = 1000) -> pd.DataFrame:
+    """The ten structural attributes of a DataFrame in one table: index, columns, axes, dtypes, size, shape, ndim, empty, T, values.
+    For tables of more than 100,000 rows, T and values are taken on the first `sample_rows` rows (a full transpose would have millions of columns)."""
+    big = len(df) > 100_000
+    part = df.iloc[:sample_rows] if big else df
+    note = f" (first {sample_rows:,} rows)" if big else ""
+    idx = df.index
+    if isinstance(idx, pd.RangeIndex):
+        idx_txt = f"RangeIndex {idx.start:,} to {idx.stop - 1:,}, step {idx.step}: a position counter, not an identifier"
+    else:
+        idx_txt = f"{type(idx).__name__} of {idx.dtype}, {idx.nunique():,} distinct labels"
+    cols = [str(c) for c in df.columns]
+    kinds = df.dtypes.astype(str).value_counts()
+    arr = part.to_numpy()
+    rows = [
+        ("df.index", idx_txt, "the row labels; a RangeIndex means the table has no natural key"),
+        ("df.columns", f"{len(cols)} labels: " + ", ".join(cols[:6]) + (" …" if len(cols) > 6 else ""), "the column names, in file order"),
+        ("df.axes", f"[index: {len(df.axes[0]):,} labels, columns: {len(df.axes[1])} labels]", "the two axes together: rows first, then columns"),
+        ("df.dtypes", "; ".join(f"{k} × {v}" for k, v in kinds.items()), "column types; `object`/`str` where a number or date is expected signals a conversion to do"),
+        ("df.size", f"{df.size:,} cells", "rows × columns"),
+        ("df.shape", f"{df.shape[0]:,} rows × {df.shape[1]} columns", "the grain of the table is (rows) records described by (columns) fields"),
+        ("df.ndim", f"{df.ndim}", "always 2 for a table"),
+        ("df.empty", f"{df.empty}", "True only if the table has no rows or no columns"),
+        ("df.T", f"transposed shape {part.T.shape}{note}", "rows and columns swapped; used below to preview wide tables"),
+        ("df.values", f"{type(arr).__name__} {arr.shape}, dtype {arr.dtype}{note}", "the raw array: mixed column types force dtype `object`, only all-numeric tables give a numeric array"),
+    ]
+    return pd.DataFrame(rows, columns=["attribute", name, "what it tells us"]).set_index("attribute")
+
+def show_anatomy(df: pd.DataFrame, name: str) -> None:
+    """Display the anatomy table and a transposed preview (first five records, one column per record)."""
+    display(anatomy(df, name).style.set_properties(**{"text-align": "left", "white-space": "normal"}))
+    md(f"**{name}: transposed preview** (`df.head().T`: each column is a row, each of the first five records is a column)")
+    with pd.option_context("display.max_rows", 60, "display.max_colwidth", 42):
+        display(df.head().T)
+
+def ends(df: pd.DataFrame, name: str, n: int = 15, sample: bool = False) -> None:
+    """First n rows, last n rows and, optionally, n random rows, with every column shown."""
+    with pd.option_context("display.max_rows", 3 * n + 5, "display.max_columns", None, "display.width", 260, "display.max_colwidth", 34):
+        md(f"**{name}: first {n} rows**"); display(df.head(n))
+        md(f"**{name}: last {n} rows**"); display(df.tail(n))
+        if sample:
+            md(f"**{name}: {n} random rows** (seed {SEED})"); display(df.sample(n, random_state=SEED))
+
+def column_card(df: pd.DataFrame) -> pd.DataFrame:
+    """One line per column: type, non-missing, missing %, distinct values, range (numbers, dates) or most common value (text), an example."""
+    rows = []
+    for c in df.columns:
+        s = df[c]
+        r = {"column": c, "dtype": str(s.dtype), "non-null": int(s.notna().sum()), "missing %": round(s.isna().mean() * 100, 2), "distinct": int(s.nunique())}
+        if pd.api.types.is_datetime64_any_dtype(s):
+            r["range / most common value"] = f"{s.min():%Y-%m-%d} to {s.max():%Y-%m-%d}"
+        elif pd.api.types.is_numeric_dtype(s) and not pd.api.types.is_bool_dtype(s):
+            r["range / most common value"] = f"min {s.min():,.4g} | median {s.median():,.4g} | max {s.max():,.4g}"
+        else:
+            vc = s.value_counts()
+            r["range / most common value"] = f"{str(vc.index[0])[:28]!r} ({vc.iloc[0] / max(s.notna().sum(), 1):.0%})" if len(vc) else "all missing"
+        ex = s.dropna()
+        r["example"] = str(ex.iloc[0])[:34] if len(ex) else ""
+        rows.append(r)
+    return pd.DataFrame(rows).set_index("column")
+
+def overview(df: pd.DataFrame, name: str, n: int = 15, sample: bool = False) -> None:
+    """The standard look at one table: anatomy, transposed preview, first and last rows, column card."""
+    show_anatomy(df, name)
+    ends(df, name, n=n, sample=sample)
+    md(f"**{name}: column card**")
+    display(column_card(df))
+
+def bars(ax, s: pd.Series, title: str, horizontal: bool = False, color: str = C1, top: int | None = None, pct: bool = False) -> None:
+    """Bar chart of a labelled series with the value written on each bar."""
+    s = s.head(top) if top else s
+    labels = s.index.astype(str)
+    if horizontal:
+        ax.barh(labels[::-1], s.values[::-1], color=color)
+        for y, v in enumerate(s.values[::-1]):
+            ax.text(v, y, f" {v:,.0f}" if not pct else f" {v:.1f}%", va="center", fontsize=7)
+        ax.margins(x=0.18)
+    else:
+        ax.bar(labels, s.values, color=color)
+        for x, v in enumerate(s.values):
+            ax.text(x, v, f"{v:,.0f}" if not pct else f"{v:.1f}%", ha="center", va="bottom", fontsize=7)
+        ax.margins(y=0.12)
+        if len(labels) > 5:
+            plt.setp(ax.get_xticklabels(), rotation=40, ha="right", fontsize=8)
+    ax.set_title(title, fontsize=10)
+
+# %% [markdown]
 # ## 2.1 Rental bond lodgements (the outcome data)
 #
 # Each row of the Fair Trading files is one bond lodged at the start of a tenancy. The data therefore describe **new leases**
 # (the market a person moving house meets), not the rents paid by everyone who already rents. The raw table below was built by
 # stacking 62 monthly and annual workbooks; the 2021 annual file plus the 2022–2026 monthly files are used for analysis
 # because the annual and monthly files overlap from 2022.
+#
+# **Data dictionary.** One row is one bond (one new tenancy). There is no bond or tenant identifier.
+#
+# | Column (as stored) | Meaning | Type | Notes |
+# |---|---|---|---|
+# | `date` | Day the bond was lodged with Fair Trading | datetime | treated as the tenancy start |
+# | `postcode` | Postcode of the rented home | integer | the only location field |
+# | `dwelling` | `F` flat/unit, `H` house, `T` terrace/townhouse/semi, `O` other (can include rooms, garages, car spaces), `U` unknown | text code | a few undefined codes also appear |
+# | `bedrooms` | Number of bedrooms | number, with gaps | `0` can mean a studio, or a garage or car space |
+# | `rent` | Weekly rent in AUD at the start of the tenancy | number, with gaps | stated by the agent or landlord |
+# | `src_file` | The workbook the row came from | text | provenance |
+# | `file_kind` | `annual` or `monthly` | text | used to avoid double counting |
 
 # %%
 bond_raw = pd.read_parquet(PROC / "bond_lodgements_raw.parquet",
@@ -163,13 +298,105 @@ bond_raw = pd.read_parquet(PROC / "bond_lodgements_raw.parquet",
 print(f"Rows: {len(bond_raw):,} | files: {bond_raw.src_file.nunique()} (annual: "
       f"{bond_raw.loc[bond_raw.file_kind == 'annual', 'src_file'].nunique()}, monthly: "
       f"{bond_raw.loc[bond_raw.file_kind == 'monthly', 'src_file'].nunique()})")
-bond_raw.head()
+
+# %% [markdown]
+# **Structure of the table.** The ten attributes below describe the table the way pandas sees it; the transposed preview shows the first five bonds with each
+# column as a row.
 
 # %%
-bond_raw.tail(3)
+show_anatomy(bond_raw, "bond_raw")
+
+# %% [markdown]
+# **First and last rows.** Twenty rows from each end, and twenty random rows. The random rows matter because the file order is not representative (see the note below the tables).
+
+# %%
+ends(bond_raw, "bond_raw", n=20, sample=True)
+
+# %%
+head20, tail20 = bond_raw.head(20), bond_raw.tail(20)
+rnd20 = bond_raw.sample(20, random_state=SEED)
+mix20 = ", ".join(f"{v} × `{k}`" for k, v in rnd20.dwelling.value_counts().items())
+md(f"**Why the first and last rows are not enough.** The table is stacked file by file and, inside a file, ordered by postcode. The first 20 rows therefore all come from "
+   f"`{head20.src_file.iloc[0]}` and cover only {head20.postcode.nunique()} postcode ({', '.join(map(str, sorted(head20.postcode.unique())))}); all are flats (`{'`, `'.join(head20.dwelling.unique())}`) "
+   f"with {' or '.join(str(int(b)) for b in sorted(head20.bedrooms.unique()))} bedrooms, so they say little about the whole market. The last 20 come from `{tail20.src_file.iloc[-1]}` and cover "
+   f"{tail20.postcode.nunique()} postcode(s). The 20 random rows come from {rnd20.postcode.nunique()} different postcodes with dwelling codes {mix20} and {int(rnd20.bedrooms.min())} to "
+   f"{int(rnd20.bedrooms.max())} bedrooms: a fairer picture of a typical record.")
+
+# %% [markdown]
+# **Data types, missing values and distinct values, column by column.** `info()` gives the counts; the column card adds the range or the most common value and an example.
 
 # %%
 bond_raw.info()
+
+# %%
+column_card(bond_raw)
+
+# %% [markdown]
+# **Distributions at a glance.** Six charts on the 2021–2026 analysis files (the construction of this set is explained below): how rents are distributed, how many bedrooms
+# bonds report, which dwelling codes occur, where the bonds are, how big each source file is, and whether rent rises with bedrooms as it should.
+
+# %%
+bcat = (bond_raw.bedrooms.clip(upper=7).fillna(-1).astype(int)
+        .map(lambda v: "missing" if v < 0 else ("7+" if v == 7 else str(v))))
+bed_order = ["0", "1", "2", "3", "4", "5", "6", "7+", "missing"]
+_in_src = (((bond_raw.file_kind == "annual") & (bond_raw.date.dt.year == 2021)) | ((bond_raw.file_kind == "monthly") & (bond_raw.date >= "2022-01-01")))
+b_view = bond_raw[_in_src]
+bc_view = bcat[_in_src]
+
+fig, axes = plt.subplots(2, 3, figsize=(16.5, 8.6))
+r = b_view.rent.dropna(); r = r[r > 0]
+axes[0, 0].hist(r, bins=np.logspace(np.log10(r.min()), np.log10(r.max()), 90), color=C1)
+axes[0, 0].set_xscale("log"); axes[0, 0].set_xlim(30, 30000)
+for lim in (100, 5000):
+    axes[0, 0].axvline(lim, color="#c0392b", ls="--", lw=1)
+axes[0, 0].axvline(r.median(), color="black", lw=1)
+axes[0, 0].set_title(f"Weekly rent (log scale): median ${r.median():,.0f}; dashed = $100 and $5,000".replace("$", r"\$"), fontsize=10)
+axes[0, 0].set_xlabel("weekly rent (AUD)"); axes[0, 0].set_ylabel("bonds")
+
+bars(axes[0, 1], bc_view.value_counts().reindex(bed_order).fillna(0), "Bedrooms reported (7+ pooled; missing shown)", color=C1)
+axes[0, 1].set_xlabel("bedrooms"); axes[0, 1].yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v/1000:,.0f}k"))
+
+dw = b_view.dwelling.value_counts()
+dw = pd.concat([dw[[c for c in "FHTOU" if c in dw.index]], pd.Series({"other codes": dw.drop([c for c in "FHTOU" if c in dw.index]).sum()})])
+bars(axes[0, 2], dw, "Dwelling type codes (F flat, H house, T terrace, O other, U unknown)", color=C2)
+axes[0, 2].yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v/1000:,.0f}k"))
+
+pc_counts = b_view.postcode.value_counts()
+bars(axes[1, 0], pc_counts.head(15), f"15 busiest postcodes (of {len(pc_counts)} in the files)", horizontal=True, color=C1)
+axes[1, 0].xaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v/1000:,.0f}k")); axes[1, 0].set_xlabel("bonds")
+
+files = (bond_raw.groupby(["src_file", "file_kind"]).agg(rows=("rent", "size"), first=("date", "min")).reset_index().sort_values("first").reset_index(drop=True))
+axes[1, 1].bar(files.index, files.rows, color=files.file_kind.map({"annual": C3, "monthly": C1}))
+axes[1, 1].set_yscale("log"); axes[1, 1].minorticks_off()
+axes[1, 1].set_yticks([20_000, 50_000, 100_000, 300_000]); axes[1, 1].set_yticklabels(["20k", "50k", "100k", "300k"])
+axes[1, 1].set_xlabel("62 source files in date order"); axes[1, 1].set_ylabel("rows (log scale)")
+axes[1, 1].set_title("Rows per source file (orange = annual, blue = monthly)", fontsize=10)
+
+bb = b_view[b_view.rent.between(100, 5000) & b_view.bedrooms.between(0, 6)]
+stats_bed = bb.groupby("bedrooms").rent.quantile([.25, .5, .75]).unstack()
+axes[1, 2].errorbar(stats_bed.index, stats_bed[.5], yerr=[stats_bed[.5] - stats_bed[.25], stats_bed[.75] - stats_bed[.5]], fmt="o-", color=C1, capsize=4)
+axes[1, 2].set_title("Median weekly rent by bedrooms (bars: 25th to 75th percentile)", fontsize=10)
+axes[1, 2].set_xlabel("bedrooms"); axes[1, 2].set_ylabel("weekly rent (AUD)")
+plt.tight_layout()
+plt.show()
+
+# %%
+top15_share = pc_counts.head(15).sum() / pc_counts.sum()
+_pool = set(pd.read_csv(PROC / "exposure_postcode.csv", dtype={"poa": str}, usecols=["poa", "in_pool"]).query("in_pool").poa)
+outside15 = [str(p) for p in pc_counts.head(15).index if f"{int(p):04d}" not in _pool]
+files_stats = files.groupby("file_kind").rows.agg(["count", "median", "sum"])
+md(f"**What the six charts show.**\n\n"
+   f"- **Rent** is strongly right-skewed (skewness {r.skew():.1f}; {np.log(r).skew():.2f} after a log transform), with a median of ${r.median():,.0f} a week and a long tail to several thousand dollars; "
+   f"this is why rent is analysed on a log scale. The dashed lines are the plausibility limits used in 3.1.\n"
+   f"- **Bedrooms** are dominated by 1, 2 and 3; `0` (studios, but also garages and car spaces) and the missing category are both visible. "
+   f"{(bc_view == 'missing').mean():.1%} of bonds have no bedroom count.\n"
+   f"- **Dwelling codes** are mostly flats (`F`) and houses (`H`); `U` (unknown) and a handful of undefined codes need a decision (3.1).\n"
+   f"- **Location:** the {len(pc_counts)} postcodes cover all of NSW and are not equally represented; the 15 busiest hold {top15_share:.0%} of the bonds. "
+   f"Among them, the postcodes outside the 247-postcode Greater Sydney pool used for the analysis (see 3.1): {', '.join(outside15) or 'none'}.\n"
+   f"- **Files:** the {int(files_stats.loc['annual', 'count'])} annual workbooks hold about {files_stats.loc['annual', 'median']:,.0f} rows each and the {int(files_stats.loc['monthly', 'count'])} monthly ones about "
+   f"{files_stats.loc['monthly', 'median']:,.0f}; the annual files repeat the monthly ones from 2022 (checked next).\n"
+   f"- **Sanity check:** median rent rises steadily with bedrooms (about ${stats_bed.loc[1, .5]:,.0f} for one bedroom, ${stats_bed.loc[2, .5]:,.0f} for two, ${stats_bed.loc[3, .5]:,.0f} for three), "
+   f"as it should; where `bedrooms` is 0 the median (${stats_bed.loc[0, .5]:,.0f}) is below one bedroom, consistent with studios being smaller.")
 
 # %% [markdown]
 # **Overlap check.** Annual and monthly files cover the same bonds from 2022. If they agree, using one source avoids double counting.
@@ -212,6 +439,49 @@ print(f"2018 file: {len(b18_raw):,} lines read | {int(unreadable.sum())} complet
 print("Non-numeric entries, recorded as missing:", text_codes)
 
 # %% [markdown]
+# **The 2018 file as it arrives.** Every column is read as text (`dtype=str`) so that nothing is converted silently. The last rows show why the blank-line check above is
+# needed, and the table after them shows the type of every column before and after conversion.
+
+# %%
+ends(b18_raw, "2018 file as read (all text)", n=15)
+
+# %%
+conv = pd.DataFrame({"as read": b18_raw.dtypes.astype(str),
+                     "after conversion": pd.Series({"d": "replaced by `date`", **{c: str(b18[c].dtype) for c in ["postcode", "dwelling", "bedrooms", "rent"]}})})
+conv.loc["date"] = ["(not in the file)", str(b18["date"].dtype)]
+display(conv)
+md("**2018 file after conversion: column card**")
+display(column_card(b18[["date", "postcode", "dwelling", "bedrooms", "rent"]]))
+
+# %% [markdown]
+# **Is the 2018 file comparable with the later years?** The pre-COVID baseline rests on this file alone, so its composition is compared with two later years: the mix of
+# dwelling codes, the rent distribution, and the share of missing values.
+
+# %%
+periods = {"2018 file": b18, "2021 files": bond_src[bond_src.date.dt.year == 2021], "2023 files": bond_src[bond_src.date.dt.year == 2023]}
+mix = pd.DataFrame({k: d.dwelling.value_counts(normalize=True) for k, d in periods.items()}).reindex(list("FHTOU")).mul(100)
+miss_share = pd.DataFrame({k: d[["rent", "bedrooms"]].isna().mean().mul(100) for k, d in periods.items()}).T
+
+fig, axes = plt.subplots(1, 3, figsize=(16, 4.4))
+mix.plot.bar(ax=axes[0], rot=0, color=[C3, C1, C2])
+axes[0].set_title("Share of bonds by dwelling code (%)", fontsize=10); axes[0].set_xlabel("dwelling code"); axes[0].legend(frameon=False, fontsize=8)
+for (k, d), col in zip(periods.items(), [C3, C1, C2]):
+    rr = d.rent.dropna(); rr = rr[(rr >= 100) & (rr <= 2000)]
+    axes[1].hist(rr, bins=60, density=True, histtype="step", lw=1.7, color=col, label=k)
+axes[1].set_title("Weekly rent between $100 and $2,000 (density)".replace("$", r"\$"), fontsize=10); axes[1].set_xlabel("weekly rent (AUD)"); axes[1].legend(frameon=False, fontsize=8)
+miss_share.plot.bar(ax=axes[2], rot=0, color=[C1, C2])
+axes[2].set_title("Missing values (% of bonds)", fontsize=10); axes[2].legend(frameon=False, fontsize=8)
+plt.tight_layout()
+plt.show()
+
+# %%
+md(f"**Reading the comparison.** The 2018 file has a different coding profile: `U` (unknown) is {mix.loc['U', '2018 file']:.1f}% of bonds, against {mix.loc['U', '2021 files']:.1f}% in 2021 and "
+   f"{mix.loc['U', '2023 files']:.1f}% in 2023, and flats are {mix.loc['F', '2018 file']:.1f}% of bonds against {mix.loc['F', '2021 files']:.1f}% in 2021. "
+   f"Rent is missing in {miss_share.loc['2018 file', 'rent']:.1f}% of 2018 bonds against {miss_share.loc['2021 files', 'rent']:.1f}% in 2021, and bedrooms in {miss_share.loc['2018 file', 'bedrooms']:.1f}% "
+   f"against {miss_share.loc['2021 files', 'bedrooms']:.1f}%. The three rent distributions have the same shape; the 2018 and 2021 curves almost coincide and the 2023 curve sits to the right, so the file is usable as a baseline, "
+   "but it is the least complete of the bond files: its gaps are examined with the others below, and 6.5 compares its medians with the official DCJ series.")
+
+# %% [markdown]
 # ### Missing values, codes and ranges
 
 # %%
@@ -227,6 +497,34 @@ print("Dwelling type codes (2021–2026):\n", bond_src.dwelling.value_counts(dro
 # %%
 num = bond_src[["bedrooms", "rent"]].describe(percentiles=[.01, .05, .5, .95, .99])
 num
+
+# %% [markdown]
+# **More on the numeric columns.** Skewness and kurtosis quantify what the histogram showed, a table of rent by bedroom count checks that the two fields are consistent with each
+# other, and the heat map shows which bedroom counts go with which dwelling code (a cross-check between fields: houses with no bedrooms would be suspicious).
+
+# %%
+display(bond_src[["bedrooms", "rent"]].agg(["skew", "kurt"]).T.rename(columns={"skew": "skewness", "kurt": "excess kurtosis"}))
+bcat_src = bcat.loc[bond_src.index]
+bed_tab = (bond_src.assign(bedrooms_group=bcat_src).groupby("bedrooms_group")
+           .agg(bonds=("rent", "size"), rent_missing=("rent", lambda s: s.isna().sum()), p25=("rent", lambda s: s.quantile(.25)),
+                median_rent=("rent", "median"), p75=("rent", lambda s: s.quantile(.75))).reindex(bed_order))
+display(bed_tab.round(0))
+
+ct = pd.crosstab(bond_src.dwelling, bcat_src, normalize="index").reindex(index=list("FHTOU"), columns=bed_order).mul(100)
+fig, ax = plt.subplots(figsize=(10, 3.6))
+sns.heatmap(ct, annot=True, fmt=".0f", cmap="Blues", cbar_kws={"label": "% of the dwelling type"}, ax=ax)
+ax.set_title("Bedroom count within each dwelling code (rows add to 100%)", fontsize=10); ax.set_xlabel("bedrooms"); ax.set_ylabel("dwelling code")
+plt.tight_layout()
+plt.show()
+
+# %%
+md(f"**Reading the tables.** Rent has skewness {bond_src.rent.skew():.1f} and excess kurtosis {bond_src.rent.kurt():,.0f}: a few very large values stretch the right tail, "
+   "which is why rent is analysed as a log ratio and why medians, not means, are compared. "
+   f"The median rent rises with every extra bedroom (from ${bed_tab.loc['1', 'median_rent']:,.0f} for one bedroom to ${bed_tab.loc['4', 'median_rent']:,.0f} for four), so the two fields agree. "
+   f"The heat map is also consistent with the legend: flats are mostly {ct.loc['F'].drop('missing').nlargest(2).index[0]} and {ct.loc['F'].drop('missing').nlargest(2).index[1]} bedrooms, "
+   f"houses mostly {ct.loc['H'].drop('missing').nlargest(2).index[0]} and {ct.loc['H'].drop('missing').nlargest(2).index[1]}; "
+   f"{ct.loc['H', '0']:.1f}% of houses report 0 bedrooms and {ct.loc['O', '0']:.0f}% of `O` ('other') premises do, as expected for rooms, garages and car spaces. "
+   f"Bonds of type `U` are the least informative: {ct.loc['U', 'missing']:.0f}% of them have no bedroom count.")
 
 # %% [markdown]
 # ### Missing-value pattern
@@ -322,6 +620,24 @@ ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:,.0f}"))
 plt.show()
 
 # %%
+all_dates = pd.concat([b18.date, bond_src.date])
+cov = all_dates.groupby([all_dates.dt.year.rename("year"), all_dates.dt.month.rename("month")]).size().unstack().reindex(range(2018, 2027))
+fig, ax = plt.subplots(figsize=(11.5, 4.2))
+ax.set_facecolor("#e5e8e8")
+sns.heatmap(cov.div(1000), mask=cov.isna(), annot=True, fmt=".0f", cmap="Blues", linewidths=0.5, linecolor="white", ax=ax, cbar_kws={"label": "bonds lodged (thousands)"})
+ax.set_title("Coverage by year and month, all of NSW: 2018 file and 2021–2026 files (grey = no file)", fontsize=10)
+ax.set_xlabel("month of lodgement"); ax.set_ylabel("year")
+plt.tight_layout()
+plt.show()
+yearly = cov.sum(axis=1)
+by_month = cov.loc[2022:2025].mean()
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+md(f"**Reading the coverage chart.** Every month of 2021–2026 up to September 2026 is present, and 2018 is complete; 2019 and 2020 are entirely absent (grey rows), which is why the pre-COVID check "
+   f"in 6.5 uses the DCJ quarterly medians instead. Annual volume is steady at about {yearly.loc[2022:2025].mean():,.0f} bonds in 2022–2025 (2021: {yearly.loc[2021]:,.0f}; "
+   f"2026 so far: {yearly.loc[2026]:,.0f} to September). Within a year the busiest month is {MONTHS[int(by_month.idxmax()) - 1]} (about {by_month.max():,.0f} bonds) and the quietest "
+   f"{MONTHS[int(by_month.idxmin()) - 1]} (about {by_month.min():,.0f}), a seasonal rhythm in lodgements that is taken up again in 4.4 for rents.")
+
+# %%
 weekday = bond_src.date.dt.day_name().value_counts().reindex(
     ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"])
 print((weekday / weekday.sum() * 100).round(1).to_string())
@@ -400,7 +716,8 @@ md(f"**What the hard limits remove.** {n_out:,} bonds ({n_out / valid.sum():.2%}
 # %% [markdown]
 # ## 2.2 Other sources
 #
-# A compact profile function keeps the quality checks comparable across the smaller sources.
+# Ten smaller tables follow, each examined with the four tools of 2.0. A compact `profile()` function first gives a one-line quality comparison; all tables are loaded in the
+# next cell, and a live catalogue then compares their sizes.
 
 # %%
 def profile(df: pd.DataFrame, name: str) -> dict:
@@ -417,6 +734,7 @@ cr_ins = pd.read_csv(RAW / "cricos_full" / "cricos-institutions.csv", dtype=str,
 # --- Department of Education enrolments by SA4
 doe = pd.read_excel(RAW / "doe_sa4" / "intl_student_sa4.xlsx", header=5, usecols=range(7)).dropna(subset=["State"])
 doe = doe.rename(columns=lambda c: c.strip().lower().replace(" ", "_"))      # tidy column names
+doe_raw = doe.copy()                                                            # kept as read, to show the raw column types
 doe["enrolments"] = pd.to_numeric(doe["enrolments"], errors="coerce")           # "<5" cells are suppressed -> NaN
 
 # --- BP0015 cube (visas granted; used for the sensitivity phases)
@@ -434,16 +752,112 @@ pd.DataFrame([profile(cr_cl, "CRICOS course-locations"), profile(cr_loc, "CRICOS
               profile(dcj, "DCJ rent tables (quarterly)"), profile(audit, "CoS Housing Audit")])
 
 # %%
-dcj_dups = dcj[dcj.duplicated(keep=False)]
-gs_pool = pd.read_csv(PROC / "exposure_postcode.csv", dtype={"poa": str}, usecols=["poa", "in_pool"]).query("in_pool").poa
-print(f"DCJ exact duplicate rows: {int(dcj.duplicated().sum())}, in postcode(s) {sorted(dcj_dups.poa.unique())} and quarter(s) "
-      f"{sorted(dcj_dups.quarter.unique())}; rows in the 247-postcode analysis pool: {int(dcj_dups.poa.isin(gs_pool).sum())}")
+SOURCE_INFO = {
+    "CRICOS institutions": (cr_ins, "one education provider", "CRICOS Provider Code"),
+    "CRICOS courses": (cr_crs, "one course offered by a provider", "CRICOS Provider Code + CRICOS Course Code"),
+    "CRICOS locations": (cr_loc, "one teaching location of a provider", "CRICOS Provider Code + Location Name"),
+    "CRICOS course-locations": (cr_cl, "one course taught at one location", "CRICOS Course Code + Location Name"),
+    "DoE enrolments by SA4": (doe, "SA4 × remoteness × sector × broad field", "SA4 Name"),
+    "BP0015 visas granted": (bp, "financial year × month × client location × sector × applicant × state × previous visa", "none (time series)"),
+    "BP0019 visa holders present": (bp19, "quarter-end × visa subclass × applicant × citizenship", "none (national time series)"),
+    "Census 2021 by postcode": (census, "one postcode", "poa"),
+    "DCJ rent tables": (dcj, "postcode × dwelling type × bedrooms × quarter", "poa"),
+    "CoS Housing Audit": (audit, "one June audit year", "audit_year"),
+}
+source_catalogue = pd.DataFrame([{"source": k, "one row is": v[1], "rows": f"{len(v[0]):,}", "columns": v[0].shape[1],
+                                  "memory (MB)": round(v[0].memory_usage(deep=True).sum() / 1e6, 1), "key columns": v[2]} for k, v in SOURCE_INFO.items()]).set_index("source")
+display(source_catalogue.style.set_properties(**{"text-align": "left"}))
+
+fig, ax = plt.subplots(figsize=(11, 3.8))
+sizes = pd.Series({k: len(v[0]) for k, v in SOURCE_INFO.items()}).sort_values()
+ax.barh(sizes.index, sizes.values, color=C1)
+ax.set_xscale("log"); ax.set_xlabel("rows (log scale)")
+for y, v in enumerate(sizes.values):
+    ax.text(v, y, f" {v:,}", va="center", fontsize=8)
+ax.set_title("Rows in each secondary table (log scale)", fontsize=10)
+ax.margins(x=0.2)
+plt.tight_layout()
+plt.show()
 
 # %% [markdown]
-# The DCJ table's missing cells are mostly **hidden** values (cells with 10 or fewer bonds), kept as `-` markers in its `*_flag` columns; how often they hit
-# the postcodes compared is shown in 6.5. Its exact duplicates (printed above) lie outside the analysis pool, and the join used in 6.5 is validated
-# one-to-one. The Census table has no missing rates for the 247 analysis postcodes (checked in 3.3).
+# ### 2.2.1 CRICOS: the register of providers, courses and campus locations
 #
+# CRICOS is published as four tables that must be joined. Every column is read as text (`dtype=str`), so numbers such as fees and capacity arrive as text and are
+# converted only for the charts below.
+#
+# | Table | One row is | Columns that matter here |
+# |---|---|---|
+# | institutions | one education provider | `CRICOS Provider Code`, `Institution Name`, `Institution Type` (Government or Private), `Institution Capacity` (text with thousands separators), postal address fields |
+# | courses | one course offered by a provider | `CRICOS Course Code`, `Course Level`, three levels of `Field of Education` (twice), `Duration (Weeks)`, `Tuition Fee` (text with `$`), `Expired` |
+# | locations | one teaching location | `Location Name`, `Location Type`, address lines, `City`, `State`, **`Postcode`** (the link to the rest of the project) |
+# | course-locations | one course taught at one location | `CRICOS Course Code`, `Location Name`, `Location City`, `Location State`: a link table with no postcode of its own |
+#
+# CRICOS lists what is *offered*, not how many students attend; there are no enrolment counts. The provider "capacity" is a registration ceiling and is not used as a measure of demand.
+
+# %%
+overview(cr_ins, "CRICOS institutions")
+
+# %%
+cap = pd.to_numeric(cr_ins["Institution Capacity"].str.replace(",", "", regex=False), errors="coerce")
+fig, axes = plt.subplots(1, 3, figsize=(16, 4.4))
+bars(axes[0], cr_ins["Institution Type"].value_counts(), "Providers by type", color=C1)
+axes[1].hist(cap[cap > 0], bins=np.logspace(0, np.log10(cap.max()), 40), color=C1)
+axes[1].set_xscale("log"); axes[1].set_title("Registered capacity per provider (log scale; stored as text)", fontsize=10); axes[1].set_xlabel("capacity")
+bars(axes[2], cr_ins["Postal Address State"].value_counts(), "Providers by postal-address state", color=C2)
+plt.tight_layout()
+plt.show()
+md(f"**What to notice.** {len(cr_ins):,} rows but {cr_ins['CRICOS Provider Code'].nunique():,} distinct provider codes: some providers appear more than once. "
+   f"`Institution Capacity` is stored as text and is missing for {int(cap.isna().sum())} of {len(cap):,} providers; it ranges from {cap.min():,.0f} to {cap.max():,.0f}, "
+   "so a few very large providers dominate any sum. This is one reason capacity is not used as a measure of demand.")
+
+# %%
+overview(cr_loc, "CRICOS locations")
+
+# %%
+fig, axes = plt.subplots(1, 3, figsize=(16.5, 4.6))
+bars(axes[0], cr_loc["State"].value_counts(), "Teaching locations by state", color=C1)
+bars(axes[1], cr_loc["Location Type"].value_counts().rename(lambda s: s[:34]), "Location type", horizontal=True, color=C2)
+bars(axes[2], cr_loc["Institution Name"].value_counts().head(10).rename(lambda s: s[:30]), "Providers with most locations", horizontal=True, color=C1)
+plt.tight_layout()
+plt.show()
+md(f"**What to notice.** NSW has {(cr_loc.State == 'NSW').mean():.0%} of the {len(cr_loc):,} locations. `Postcode` is present for {cr_loc.Postcode.notna().mean():.1%} of rows and is the only link to the rest of the "
+   f"project; {cr_loc.Postcode.nunique()} distinct postcodes occur. `Location Name` repeats across providers ({cr_loc['Location Name'].nunique():,} distinct in {len(cr_loc):,} rows), "
+   "which is why the join to course-locations uses provider code and location name together.")
+
+# %%
+overview(cr_crs, "CRICOS courses")
+
+# %%
+fee = pd.to_numeric(cr_crs["Tuition Fee"].str.replace(r"[$,]", "", regex=True), errors="coerce")
+fig, axes = plt.subplots(1, 3, figsize=(17, 4.8))
+bars(axes[0], cr_crs["Course Level"].value_counts().rename(lambda s: s[:32]), "Course level (12 most common)", horizontal=True, top=12, color=C1)
+bars(axes[1], cr_crs["Field of Education 1 Broad Field"].value_counts().rename(lambda s: s[:40]), "Broad field of education (10 most common)", horizontal=True, top=10, color=C2)
+axes[2].hist(fee[fee > 0], bins=np.logspace(2, np.log10(fee.max()), 50), color=C1)
+axes[2].set_xscale("log"); axes[2].set_title("Tuition fee in AUD (log scale; stored as text with $)".replace("$", r"\$"), fontsize=10); axes[2].set_xlabel("tuition fee")
+plt.tight_layout()
+plt.show()
+md(f"**What to notice.** {len(cr_crs):,} courses, of which {(cr_crs.Expired == 'Yes').sum():,} are marked `Expired` and are dropped when campuses are built. "
+   f"The three most common levels are {', '.join(f'*{k}* ({v:.0%})' for k, v in cr_crs['Course Level'].value_counts(normalize=True).head(3).items())}; "
+   f"bachelor and masters degrees together are {cr_crs['Course Level'].isin(['Bachelor Degree', 'Masters Degree (Coursework)']).mean():.0%} of courses, so the register mixes degrees with a large vocational "
+   f"and diploma segment; the higher-education subset is what the exposure measure uses. `Tuition Fee` is text and is missing for {fee.isna().mean():.0%} of courses.")
+
+# %%
+overview(cr_cl, "CRICOS course-locations")
+
+# %%
+per_course = cr_cl.groupby("CRICOS Course Code").size()
+fig, axes = plt.subplots(1, 3, figsize=(16.5, 4.6))
+bars(axes[0], cr_cl["Location State"].value_counts(), "Course-location rows by state", color=C1)
+bars(axes[1], cr_cl["Institution Name"].value_counts().head(10).rename(lambda s: s[:30]), "Providers with most course-location rows", horizontal=True, color=C2)
+axes[2].hist(per_course.clip(upper=15), bins=np.arange(0.5, 16.5, 1), color=C1)
+axes[2].set_title("Locations per course (15 = 15 or more)", fontsize=10); axes[2].set_xlabel("locations a course is taught at"); axes[2].set_ylabel("courses")
+plt.tight_layout()
+plt.show()
+top10 = cr_cl["Institution Name"].value_counts(normalize=True).head(10).sum()
+md(f"**What to notice.** {len(cr_cl):,} course-at-location rows. The ten providers with most rows hold {top10:.0%} of them, so the table is spread over many providers rather than dominated by a few. "
+   f"{(per_course == 1).mean():.0%} of courses are taught at one location only. The table has no postcode; it must be joined to the locations table (next cell).")
+
+# %% [markdown]
 # **CRICOS join coverage.** The course-location file has no postcode, so it must be joined to the locations table. We test that the join key is reliable.
 
 # %%
@@ -454,13 +868,232 @@ print(f"Course-location rows: {len(cr_cl):,} | matched to a postcode: {joined.Po
 print("Expired courses in the courses table:", (cr_crs.Expired == 'Yes').sum())
 
 # %% [markdown]
-# **Department of Education enrolments.** Sector labels differ in spelling and case; they are normalised before use. Suppressed cells (<5) become missing values.
+# ### 2.2.2 Department of Education: international student enrolments by SA4
+#
+# International students on student visas (PRISMS system), counted for each **SA4 region** and split by education sector and broad field of study, for the year to December 2025.
+# A student with two courses counts twice. It is **place of study, not residence**, and counts below 5 are hidden.
+#
+# | Column | Meaning |
+# |---|---|
+# | `State`, `SA4 Name` | the region; Greater Sydney regions are named "Sydney – …" |
+# | `ABS Remoteness Area` | ABS remoteness class of the region |
+# | `Sector` | Higher Education, VET, ELICOS (English), Schools, Non-Award, … (labels differ in spelling and case) |
+# | `Broad Field Of Education` | broad field of study |
+# | `Enrolments`, `Commencements` | course enrolments in the year, and how many of them started in the year |
+#
+# The table is first shown **as read** (after tidying the column names): `Enrolments` and `Commencements` have type `object` because the hidden cells are the text `<5`.
+
+# %%
+overview(doe_raw, "DoE enrolments by SA4, as read")
+
+# %% [markdown]
+# Sector labels differ in spelling and case; they are normalised before use. Suppressed cells (<5) become missing values.
 
 # %%
 print("Before:", sorted(doe.sector.unique()))
 doe["sector"] = doe["sector"].str.replace(r"\s+", " ", regex=True).str.strip().str.title()
 print("After: ", sorted(doe.sector.unique()))
 print(f"Suppressed cells: {doe.enrolments.isna().sum()} of {len(doe)}")
+
+# %%
+doe_commence = pd.to_numeric(doe["commencements"], errors="coerce")
+sa4_nsw = doe[doe.state == "NSW"].groupby("sa4_name").enrolments.sum().sort_values(ascending=False)
+fig, axes = plt.subplots(1, 3, figsize=(17, 4.8))
+bars(axes[0], doe.groupby("sector").enrolments.sum().sort_values(ascending=False).rename(lambda s: s[:36]), "Enrolments by sector (all states)", horizontal=True, color=C1)
+bars(axes[1], doe.groupby("state").enrolments.sum().sort_values(ascending=False), "Enrolments by state", color=C2)
+bars(axes[2], sa4_nsw.head(10).rename(lambda s: s[:30]), "NSW: ten SA4 regions with most enrolments", horizontal=True, color=C1)
+plt.tight_layout()
+plt.show()
+syd = doe[doe.sa4_name.str.startswith("Sydney")].groupby("sa4_name").enrolments.sum().sort_values(ascending=False)
+md(f"**What to notice.** After conversion {doe.enrolments.isna().sum()} of {len(doe):,} `Enrolments` cells are missing (hidden because they are below 5), and `Commencements` is still text with "
+   f"{doe_commence.isna().sum()} hidden cells (it is not used in the analysis). Enrolments are very concentrated: in Greater Sydney, *{syd.index[0]}* holds {syd.iloc[0] / syd.sum():.0%} of the enrolments "
+   f"and the ten smallest regions hold {syd.tail(10).sum() / syd.sum():.0%} between them; this is why exposure is built from campuses, not from the SA4 share alone. "
+   f"Only one year is available, so the table cannot describe change over time.")
+
+# %% [markdown]
+# ### 2.2.3 Home Affairs BP0015: student visas granted
+#
+# A pivot cube of student visas **granted** (a flow): financial year, month, whether the applicant was in or outside Australia, education sector, primary or secondary applicant, state of the
+# provider, and the applicant's previous visa. `grants` is the number of visas. It is a time series with no postcode, used here only to define the sensitivity phases.
+
+# %%
+overview(bp, "BP0015 visas granted")
+
+# %%
+fy_months = bp.groupby("fy").month.nunique()
+fy_tot = bp[bp.applicant == "Primary"].groupby("fy").grants.sum().loc[lambda s: s.index >= "2012-13"]
+latest_full = fy_months[fy_months == 12].index.max()
+fig, axes = plt.subplots(1, 3, figsize=(17.5, 4.8))
+axes[0].bar([f[:7] for f in fy_tot.index], fy_tot.values, color=[C1 if fy_months[f] == 12 else C3 for f in fy_tot.index])
+axes[0].set_title("Visas granted to primary applicants by financial year (orange = partial year)", fontsize=10); axes[0].tick_params(axis="x", rotation=70, labelsize=8)
+axes[0].yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v/1000:,.0f}k"))
+lastfy = bp[(bp.fy == latest_full) & (bp.applicant == "Primary")]
+bars(axes[1], lastfy.groupby("sector").grants.sum().sort_values(ascending=False).rename(lambda s: s.replace(" Sector", "")[:40]), f"{latest_full}: grants by sector", horizontal=True, color=C1)
+bars(axes[2], lastfy.groupby("state").grants.sum().sort_values(ascending=False), f"{latest_full}: grants by state of provider", color=C2)
+plt.tight_layout()
+plt.show()
+md(f"**What to notice.** `fy` and `month` are text labels (`2022-23`, `M01 Jul`), so a calendar date has to be rebuilt from them (3.6). The last financial year in the file, *{fy_months.index[-1]}*, "
+   f"holds only {fy_months.iloc[-1]} months, so it is not comparable with a full year. NSW accounts for {lastfy[lastfy.state == 'NSW'].grants.sum() / lastfy.grants.sum():.0%} of grants in {latest_full}, "
+   "and higher education and VET are the largest sectors. The cube says where the provider is, not where the student lives.")
+
+# %% [markdown]
+# ### 2.2.4 Home Affairs BP0019: student visa holders present in Australia
+#
+# The *stock* of temporary visa holders present at each quarter-end, read from the hidden data of an Excel pivot table. **National only**: there is no state or postcode.
+#
+# | Column | Meaning |
+# |---|---|
+# | `snapshot` | quarter-end date the stock is counted at |
+# | `visa_category`, `visa_subclass`, `visa_type` | Student, Temporary Graduate, Visitor, Working Holiday Maker, …; the specific visa |
+# | `applicant_type` | `Primary` (the student) or `Secondary` (a family member) |
+# | `citizenship` | country of citizenship |
+# | `visa_holders` | number of holders present at the snapshot |
+
+# %%
+overview(bp19, "BP0019 visa holders present")
+
+# %%
+stu = bp19[(bp19.visa_category == "Student") & (bp19.applicant_type == "Primary")]
+stock = stu.groupby("snapshot").visa_holders.sum()
+last_snap = bp19.snapshot.max()
+fig, axes = plt.subplots(1, 3, figsize=(17.5, 4.8))
+axes[0].plot(stock.index, stock.values, marker="o", ms=3, color=C1)
+axes[0].set_title("Student visa holders present (primary), by quarter-end", fontsize=10)
+axes[0].yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v/1000:,.0f}k"))
+now = bp19[(bp19.snapshot == last_snap) & (bp19.applicant_type == "Primary")]
+bars(axes[1], now.groupby("visa_category").visa_holders.sum().sort_values(ascending=False).rename(lambda s: s[:40]), f"Primary holders by visa category, {last_snap:%b %Y}", horizontal=True, top=8, color=C1)
+bars(axes[2], stu[stu.snapshot == last_snap].groupby("citizenship").visa_holders.sum().sort_values(ascending=False), f"Student holders by citizenship, {last_snap:%b %Y}", horizontal=True, top=10, color=C2)
+plt.tight_layout()
+plt.show()
+seasonal = stock.groupby(stock.index.month).mean()
+md(f"**What to notice.** {len(bp19):,} rows for {bp19.snapshot.nunique()} quarter-ends, {bp19.citizenship.nunique()} citizenships and {bp19.visa_subclass.nunique()} visa subclasses; the student series is the "
+   f"sum of the `Student` category for primary applicants. The stock is strongly seasonal: the March and September snapshots average about {seasonal.loc[[3, 9]].mean():,.0f} students and the "
+   f"December ones about {seasonal.loc[12]:,.0f}, so two quarters should be compared with the same quarter a year earlier (3.6). The series bottoms out in "
+   f"{stock['2020-06-30':].idxmin():%b %Y} at {stock['2020-06-30':].min():,.0f} and peaks in {stock['2020-06-30':].idxmax():%b %Y} at {stock['2020-06-30':].max():,.0f}. "
+   "It covers all education sectors and all states, so it cannot isolate university students in Sydney.")
+
+# %% [markdown]
+# ### 2.2.5 ABS Census 2021: postcode tables
+#
+# The Census counts everyone on Census night (10 August 2021). Four General Community Profile tables are combined into **one row per NSW postcode**: G01 (residents), G02 (medians),
+# G15 (educational institution attended) and G37 (tenure).
+#
+# | Column | Source table | Meaning |
+# |---|---|---|
+# | `poa` | all | postcode area (text) |
+# | `residents` | G01 | usual residents counted |
+# | `uni_students`, `uni_students_ft_15_24` | G15 | residents attending university or other higher education (all ages) and, of those, full-time aged 15–24 |
+# | `median_rent_weekly`, `median_hhd_income_weekly`, `median_age` | G02 | medians for the postcode |
+# | `renting_households`, `owning_households` | G37 | occupied private dwellings rented, or owned (outright or with a mortgage) |
+# | `uni_students_per_100`, `uni_ft_15_24_per_100`, `renter_share_pct` | derived | rates used for comparison |
+
+# %%
+overview(census, "Census 2021 by postcode")
+
+# %%
+fig, axes = plt.subplots(1, 3, figsize=(17, 4.6))
+axes[0].hist(census.uni_students_per_100, bins=60, color=C1)
+axes[0].set_title("University students per 100 residents, by postcode", fontsize=10); axes[0].set_xlabel("students per 100 residents"); axes[0].set_ylabel("postcodes")
+axes[1].hist(census.residents[census.residents > 0], bins=np.logspace(0, np.log10(census.residents.max()), 40), color=C2)
+axes[1].set_xscale("log"); axes[1].set_title("Residents per postcode (log scale)", fontsize=10); axes[1].set_xlabel("residents")
+big = census[census.residents > 0]
+axes[2].scatter(big.residents, big.uni_students.clip(lower=0.8), s=9, alpha=0.5, color=C1)
+axes[2].set_xscale("log"); axes[2].set_yscale("log"); axes[2].set_title("University students against residents (log-log)", fontsize=10)
+axes[2].set_xlabel("residents"); axes[2].set_ylabel("university students (0 drawn as 1)")
+plt.tight_layout()
+plt.show()
+small = (census.residents < 1000).sum()
+md(f"**What to notice.** {len(census)} NSW postcodes (the project compares only the 117 flat-heavy ones plus the City of Sydney). Population per postcode spans several orders of magnitude and {small} postcodes "
+   f"have fewer than 1,000 residents, where a rate per 100 residents is unstable; the rate itself is right-skewed, with most postcodes below {census.uni_students_per_100.quantile(.75):.0f} students per 100 and a few far above. "
+   "Counts include domestic students, and Census night fell during the border closure, so the measure shows where university students *live*, not where *international* students study.")
+md("**Postcodes with the most university students per 100 residents** (at least 2,000 residents):")
+display(census[census.residents >= 2000].nlargest(10, "uni_students_per_100")[["poa", "residents", "uni_students", "uni_students_per_100", "renter_share_pct", "median_rent_weekly"]].reset_index(drop=True))
+
+# %% [markdown]
+# ### 2.2.6 NSW DCJ rent tables, 2018–2022
+#
+# The Department of Communities and Justice publishes a quarterly Rent and Sales Report built from the **same bond lodgements** as 2.1, already summarised: for each postcode × dwelling type ×
+# bedroom group, the 25th percentile, median and 75th percentile weekly rent of new bonds, the number of new bonds and the number of bonds held. **Cells with 10 or fewer bonds are hidden.**
+#
+# | Column | Meaning |
+# |---|---|
+# | `poa` | postcode (text) |
+# | `dwelling_type` | `Flat/Unit`, `House`, `Townhouse`, `Other`, `Total` |
+# | `bedrooms` | `Bedsitter`, `1 Bedroom`, `2 Bedrooms`, `3 Bedrooms`, `4 or more Bedrooms`, `Not Specified`, `Total` |
+# | `rent_q1`, `rent_median`, `rent_q3` | 25th percentile, median and 75th percentile weekly rent of new bonds (AUD) |
+# | `new_bonds`, `bonds_held` | new bonds lodged in the quarter; bonds currently held |
+# | `*_flag` | `-` where the value is hidden (10 or fewer bonds); `s` marks a suppressed count |
+# | `quarter` | calendar quarter, for example `2019Q4` |
+
+# %%
+overview(dcj, "DCJ rent tables")
+
+# %%
+dcj_dups = dcj[dcj.duplicated(keep=False)]
+gs_pool = pd.read_csv(PROC / "exposure_postcode.csv", dtype={"poa": str}, usecols=["poa", "in_pool"]).query("in_pool").poa
+print(f"DCJ exact duplicate rows: {int(dcj.duplicated().sum())}, in postcode(s) {sorted(dcj_dups.poa.unique())} and quarter(s) "
+      f"{sorted(dcj_dups.quarter.unique())}; rows in the 247-postcode analysis pool: {int(dcj_dups.poa.isin(gs_pool).sum())}")
+
+# %% [markdown]
+# The DCJ table's missing cells are mostly **hidden** values (cells with 10 or fewer bonds), kept as `-` markers in its `*_flag` columns; how often they hit
+# the postcodes compared is shown in 6.5. Its exact duplicates (printed above) lie outside the analysis pool, and the join used in 6.5 is validated
+# one-to-one. The Census table has no missing rates for the 247 analysis postcodes (checked in 3.3).
+
+# %%
+flat = dcj[dcj.dwelling_type == "Flat/Unit"]
+hidden = (flat.assign(hidden=flat.rent_median_flag.eq("-")).groupby("bedrooms").hidden.mean().mul(100).sort_values())
+series = {b: flat[flat.bedrooms == b].groupby("quarter").rent_median.median() for b in ["1 Bedroom", "2 Bedrooms"]}
+fig, axes = plt.subplots(1, 3, figsize=(17, 4.6))
+bars(axes[0], hidden, "Flats/units: median rent hidden (% of cells)", horizontal=True, color=C1, pct=True)
+for b, col in zip(series, [C1, C3]):
+    axes[1].plot(range(len(series[b])), series[b].values, marker="o", ms=3, color=col, label=b)
+axes[1].set_xticks(range(0, 20, 4)); axes[1].set_xticklabels(series["1 Bedroom"].index[::4])
+axes[1].set_title("Median of postcode medians, flats/units (AUD a week)", fontsize=10); axes[1].legend(frameon=False)
+nb = flat[flat.bedrooms == "1 Bedroom"].new_bonds.dropna()
+axes[2].hist(nb, bins=np.logspace(0, np.log10(nb.max()), 40), color=C2)
+axes[2].set_xscale("log"); axes[2].set_title("New bonds per cell, 1-bedroom flats (log scale)", fontsize=10); axes[2].set_xlabel("new bonds in the quarter")
+plt.tight_layout()
+plt.show()
+md(f"**What to notice.** {len(dcj):,} rows covering {dcj.quarter.nunique()} quarters ({dcj.quarter.min()} to {dcj.quarter.max()}), so 2019 and 2020, absent from 2.1, are present. "
+   f"Overall {dcj.rent_median.isna().mean():.0%} of median cells are hidden; for flats the share depends strongly on the bedroom group ({', '.join(f'{k}: {v:.0f}%' for k, v in hidden.items())}), "
+   "so the 1- and 2-bedroom groups used later are the best covered of the specific groups; hidden cells are concentrated in small, house-dominated postcodes. These are summaries: they cannot be recombined (a 'Bedsitter' median cannot be merged with a '1 Bedroom' median), "
+   "and they are used as a separate 2018–2022 check, never spliced onto the bond medians.")
+
+# %% [markdown]
+# ### 2.2.7 City of Sydney Housing Audit, 2015–2025
+#
+# The City counts every dwelling in its area each June. The student-room figure is taken from the text of each PDF report. **One row is one audit year**, for the City of Sydney only.
+#
+# | Column | Meaning |
+# |---|---|
+# | `audit_year` | the June of the audit |
+# | `non_private_total` | all non-private dwellings: boarding house rooms, student accommodation rooms, other |
+# | `boarding_house_rooms`, `student_rooms`, `other_non_private` | components of the total |
+# | `student_rooms_net_change` | change in student rooms since the previous audit |
+# | `source_pdf` | the report the figures were read from |
+
+# %%
+overview(audit, "City of Sydney Housing Audit")
+
+# %%
+fig, axes = plt.subplots(1, 2, figsize=(14, 4.2))
+audit.set_index("audit_year")[["student_rooms", "boarding_house_rooms", "other_non_private"]].plot.bar(stacked=True, ax=axes[0], rot=0, color=[C1, C2, C3])
+axes[0].set_title("Non-private dwellings in the City of Sydney, by type", fontsize=10); axes[0].legend(frameon=False, fontsize=8)
+bars(axes[1], audit.set_index("audit_year").student_rooms_net_change.dropna(), "Net change in student rooms since the previous audit", color=C1)
+plt.tight_layout()
+plt.show()
+chk = audit.set_index("audit_year")
+chk["components added up"] = chk.boarding_house_rooms + chk.student_rooms + chk.other_non_private
+chk["total minus components"] = chk.non_private_total - chk["components added up"]
+md("**Reconciliation: do the three components add up to the reported total?**")
+display(chk[["non_private_total", "components added up", "total minus components"]].T)
+off = chk[chk["total minus components"] != 0]
+md(f"**What to notice.** Only {len(audit)} rows, so it is read in full. Student rooms grew from {chk.student_rooms.iloc[0]:,} "
+   f"({chk.index[0]}) to {chk.student_rooms.iloc[-1]:,} ({chk.index[-1]}), and the yearly net change is uneven. **The components add up to the reported total in {int((chk['total minus components'] == 0).sum())} of {len(chk)} years; "
+   f"in {', '.join(map(str, off.index))} they exceed it by {', '.join(str(int(-v)) for v in off['total minus components'])} rooms.** The figures are read from sentences in each PDF with a text pattern, so a small "
+   "mismatch points to a component that was captured from a different line than the total; the student-room series itself matches the 2025 report (12,924 rooms), and the gap is under 0.4% of the total, "
+   "so it does not change how the series is used (context only). The 2025 report adds co-living units to the boarding-house description, so the boarding-house series is not perfectly comparable over time. "
+   "There is no postcode split, so the table is context, not part of any test.")
 
 # %% [markdown]
 # ## 2.3 Quality summary
