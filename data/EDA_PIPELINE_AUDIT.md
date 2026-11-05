@@ -1,5 +1,7 @@
 # Audit solution so với kiến thức và pipeline EDA của khóa học (4 file `Python_EDA_Day_1-4.ipynb`)
 
+> **Cập nhật 05/11/2026:** các đề xuất ở đây đã được thẩm định lại trên dữ liệu và P1–P3 đã được áp dụng vào notebook chính. Có đính chính cho C2, C5 và cách chữa của P3: xem `EDA_IMPROVEMENT_VERIFICATION.md`. Số mục của notebook nêu dưới đây là số mục của bản trước khi sửa.
+
 **Đối tượng audit:** `notebooks/sydney_student_rent_eda` (notebook chính, gọi tắt **MAIN**, số mục theo notebook) và `notebooks/00_data_extraction_overview` (gọi tắt **OVERVIEW**), cùng `scripts/01-06`.
 **Quy ước nguồn:** **[R]** đọc từ code/output đã lưu trong repo; **[V]** tôi tự tính lại, script ở `data/verification/` (`v6_pipeline_audit.py` cho audit này).
 

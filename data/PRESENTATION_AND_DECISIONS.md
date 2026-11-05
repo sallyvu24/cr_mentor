@@ -1,5 +1,7 @@
 # Thuyết trình cho Business team & CEO, và thẩm định 6 quyết định trước khi sửa notebook chính
 
+> **Cập nhật 05/11/2026:** 6 quyết định ở Phần B đã được áp dụng vào notebook chính. Vì giai đoạn chính giờ theo số sinh viên có mặt (BP0019), một số con số ở Phần A đã đổi (ví dụ T1 +8.8 thành +10.0): xem `EDA_IMPROVEMENT_VERIFICATION.md`, Phần E, trước khi dùng kịch bản này.
+
 **Dự án:** Tiền thuê nhà mới ở Sydney có phản ứng khác nhau quanh các khu campus không?
 **Phạm vi tài liệu:** (A) kịch bản thuyết trình ~15 phút bằng ngôn ngữ business; (B) thẩm định 6 quyết định ở mục 13 của `notebooks/00_data_extraction_overview`; (C) nhật ký bằng chứng.
 

@@ -12680,6 +12680,48 @@ used together, and that DCJ can stand in for the missing 2019–2020 bond rows.<
 <li><strong>Housing Audit.</strong> Use it only as a small context chart for the City of Sydney (recommended), or try to link it to postcodes (not possible from the PDFs)?</li>
 <li><strong>Slimming the project notebook.</strong> The current notebook also loads BP0015, development applications and Airbnb; they do not change any finding. Drop them, or keep as short context?</li>
 </ol>
+<h2 id="Decisions-taken-(5-Nov-2026)-and-where-they-are-applied">Decisions taken (5 Nov 2026) and where they are applied<a class="anchor-link" href="#Decisions-taken-(5-Nov-2026)-and-where-they-are-applied">¶</a></h2><p>Each decision was checked against the data before the project notebook was edited (<code>EDA_IMPROVEMENT_VERIFICATION.md</code>).</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Decision</th>
+<th>Applied in <code>sydney_student_rent_eda</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Phases from students present (BP0019)</strong>: closure 2021, recovery 2022–23, plateau Jan 2024–Jun 2025, decline from Jul 2025. Visas granted (BP0015) kept as the one sensitivity definition, not run as a second full analysis.</td>
+<td>3.6, 6.6–6.7, 8</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>DCJ 1- and 2-bedroom flat medians used as a separate 2018–2022 check</strong>, not spliced onto the bond medians; pre-COVID trend measured by a regression slope, with a balanced-panel version; wording "near-parallel".</td>
+<td>6.5</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Census measure (E4) reported next to the campus-based one (E2)</strong>; the evidence grade is the lower of the two, fixed before the re-run. No composite index.</td>
+<td>3.3–3.5, 6, 6.6–6.7</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Only G01, G02, G15 and G37</strong> (G33 and G40 not extracted: G40 repeats G37's landlord split; G33's household types track inner-city small households, not students).</td>
+<td>data sources table</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Housing Audit as a context chart only</strong>, labelled as City of Sydney rooms each June, not divided by student numbers and not drawn against rents.</td>
+<td>9.2</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Development applications and Airbnb moved to <code>appendix_context_da_airbnb.ipynb</code></strong>; BP0015 kept for the sensitivity phases.</td>
+<td>9.3, appendix</td>
+</tr>
+</tbody>
+</table>
 <h2 id="Limitations-to-keep-in-mind">Limitations to keep in mind<a class="anchor-link" href="#Limitations-to-keep-in-mind">¶</a></h2><ul>
 <li>Source A has no tenant information and no 2019–2020 rows; E fills 2019–2020 only as summaries.</li>
 <li>Source C is one year and counts place of study.</li>
