@@ -185,7 +185,7 @@ Dữ liệu DCJ cho thấy rõ hơn theo quý (căn 1PN): khoảng cách mở ra
 | **1** | **Chưa tách được "sinh viên" khỏi "cú sốc chung của nội thành"**; chưa chạy kiểm định placebo dù dữ liệu đã có | **[V]** Nhà 3-4 phòng ngủ ở nhóm "Cao" cũng sụt **−7.6 điểm %** (căn hộ nhỏ: −10.4) nhưng **không hồi** (T1: −0.1, so với +8.8 của căn hộ nhỏ). Nghĩa là *nhịp sụt là hiện tượng của cả khu*, chỉ nhịp hồi là đặc trưng của căn hộ | Thêm placebo vào notebook; sửa lời diễn giải |
 | **2** | **Kết quả "tích lũy từ 2018" (−2.7 điểm %) mong manh** | Khoảng 90% chỉ vừa chạm −0.2; **đổi dấu** (+1.1, khoảng chứa 0) khi dùng thước đo Census; mất ý nghĩa khi dùng giai đoạn theo số có mặt; nhà 3-4PN còn lệch −7.3, tức đây là hiện tượng chung của khu đắt (tăng phần trăm chậm hơn) | Không coi là phát hiện; bỏ khỏi thông điệp chính |
 | **3** | **Thước đo "mức gắn campus" là mô hình**; các biến thể cùng gốc | Tương quan ~0.99 giữa 6 biến thể; Census chỉ khớp 0.50 trong nhóm so sánh | Thêm Census làm thước đo thứ hai (Quyết định 3) |
-| **4** | **Khoảng bất định có thể hẹp hơn thực tế**: bootstrap trên chỉ ~20 hành lang SA3; kiểm định ~10 cửa sổ ở mức 90% | **[V]** Các kết quả sát biên đổi khi nhiễu nhỏ: ví dụ T3 chuyển thành "có ý nghĩa" (−4.0 đến −0.1) khi xóa trùng; T2 theo Census có cận dưới 0.1 | Chỉ coi hiệu ứng *lớn* (T0, T1) là phát hiện; ghi rõ cảnh báo đa so sánh |
+| **4** | **Khoảng bất định có thể hẹp hơn thực tế**: bootstrap lấy mẫu lại 31 cụm SA3, nhưng nhóm "Cao" chỉ do 9 cụm mang (14/39 postcode nằm trong một cụm, Sydney Inner City; thực chất ~6 cụm có ý nghĩa); kiểm định ~10 cửa sổ ở mức 90% | **[V]** Các kết quả sát biên đổi khi nhiễu nhỏ: ví dụ T3 chuyển thành "có ý nghĩa" (−4.0 đến −0.1) khi xóa trùng; T2 theo Census có cận dưới 0.1 | Chỉ coi hiệu ứng *lớn* (T0, T1) là phát hiện; ghi rõ cảnh báo đa so sánh |
 | **5** | **Thiếu 2019-2020 ở mức từng hợp đồng**; DCJ chỉ là trung vị theo quý | **[V]** "Song song trước COVID" nhạy với định nghĩa: chênh lệch 2018→2019 của căn 1PN là −0.4 (trung vị năm) đến −2.1 (trung bình năm); độ dốc trước COVID −1.24 điểm %/năm (khoảng 90%: −3.08 đến −0.06) | Phát biểu "gần song song (trong ~2 điểm %/năm)", không phải "song song" (Quyết định 2) |
 | **6** | **Giai đoạn dựa trên visa cấp** | Đỉnh visa cấp 07/2023, đỉnh sinh viên có mặt 03/2025: lệch ~20 tháng | Quyết định 1 |
 | **7** | **Persona chưa được xác nhận** với người thật | `PROJECT_BRIEF.md` mục 4, điểm 12 | Một buổi phỏng vấn 30 phút với chuyên viên City of Sydney |
@@ -396,7 +396,7 @@ Kết quả nhóm Cao − Thấp, căn hộ nhỏ (giai đoạn theo visa cấp;
 |---|---|---|
 | **7** | **Thêm placebo bằng nhà 3-4 phòng ngủ** vào notebook chính | Dữ liệu đã tính sẵn nhưng chưa chạy. Kết quả [V]: nhà cùng khu cũng sụt −7.6 nhưng không hồi (−0.1). Đổi cách diễn giải "nhịp sụt là của cả khu; nhịp hồi là đặc trưng của căn hộ" |
 | **8** | **Hạ cấp "chênh lệch tích lũy từ 2018" khỏi danh sách phát hiện** | Mong manh theo 3 trục: thước đo (E4), giai đoạn (BP0019), và còn nhỏ hơn mức −7.3 của nhà riêng |
-| **9** | **Cố định cảnh báo đa so sánh** | ~10 cửa sổ ở mức 90%, ~20 cụm: chỉ coi hiệu ứng lớn (T0, T1) là phát hiện |
+| **9** | **Cố định cảnh báo đa so sánh** | ~10 cửa sổ ở mức 90%, 31 cụm nhưng chỉ ~6 cụm mang nhóm "Cao": chỉ coi hiệu ứng lớn (T0, T1) là phát hiện |
 | **10** | **Sửa hard-code đường dẫn và commit script DCJ** | 4 script hard-code `/Users/chipi/...`; không có script sinh bảng DCJ |
 | **11** | **Sửa cách tính "mức đồng thuận giữa các định nghĩa exposure" trong quy tắc xếp hạng** | Chỉ số này lấy trung bình *cả các cửa sổ không có tín hiệu*, nơi ρ ≈ 0 và dấu chỉ là nhiễu. **[V]** Theo số-có-mặt: T1 đồng thuận 100% nhưng T2 chỉ 20% (ρ từ −0.14 đến +0.15), kéo trung bình xuống đúng 60%, sát ngưỡng B. Nên tính đồng thuận *chỉ trên các cửa sổ có tín hiệu* (T0, T1), đặt trước khi chạy lại |
 
@@ -441,7 +441,7 @@ Chạy từ thư mục `data/verification/`: `python3 v1_dcj_checks.py` (cần `
 
 ## C.3 Giới hạn của chính phần thẩm định này
 
-- Mọi con số **[V]** dùng bootstrap theo cụm SA3 (~20 cụm) với 1,000-2,000 lần lặp, nên các cận sát 0 (ví dụ +0.1, −0.2, −0.1) **không ổn định**; tôi không xây kết luận trên chúng.
+- Mọi con số **[V]** dùng bootstrap theo cụm SA3 (31 cụm, trong đó nhóm "Cao" chỉ do ~6 cụm mang) với 1,000-2,000 lần lặp, nên các cận sát 0 (ví dụ +0.1, −0.2, −0.1) **không ổn định**; tôi không xây kết luận trên chúng.
 - Tôi chỉ chạy lại các phép được yêu cầu; **chưa** chạy lại toàn bộ notebook chính sau khi đổi giai đoạn và thước đo (việc đó thuộc bước sau khi bạn trả lời 6 câu hỏi).
 - Mục **[E]** (phong tỏa nội địa 2021) là kiến thức ngoài repo, cần xác minh.
 - Không có phép nào ở đây là chứng minh nhân quả; kết luận "không tách được sinh viên khỏi cú sốc chung" là kết luận về giới hạn của dữ liệu, không phải bằng chứng "không có tác động".
